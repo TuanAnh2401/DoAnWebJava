@@ -48,9 +48,14 @@ public class User implements UserDetails {
 
     @Column(name = "phone", length = 10, unique = true)
     @Length(min = 10, max = 10, message = "Phone must be 10 characters")
-    @Pattern(regexp = "^[0-9]*$", message = "Phone must be number")
+    @Pattern(regexp = "^(0|84)([0-9]{9})$", message = "Phone must be number")
     private String phone;
 
+    @Column(name = "confirmed")
+    private boolean confirmed;
+
+    @Column(name = "confirmation_token", length = 100)
+    private String confirmationToken;
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "tb_user-role",
             joinColumns = @JoinColumn(name = "user_id"),

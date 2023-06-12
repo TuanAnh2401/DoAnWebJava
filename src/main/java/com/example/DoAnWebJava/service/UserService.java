@@ -5,14 +5,18 @@ import com.example.DoAnWebJava.entities.User;
 import com.example.DoAnWebJava.repositories.UserRegistrationException;
 import com.example.DoAnWebJava.repositories.UserRepository;
 import com.example.DoAnWebJava.util.JwtTokenUtil;
+import jakarta.mail.MessagingException;
+import jakarta.mail.internet.MimeMessage;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-
+import org.springframework.mail.javamail.MimeMessageHelper;
 import java.util.UUID;
+
+import org.thymeleaf.TemplateEngine;
+import org.thymeleaf.context.Context;
 
 @Service
 public class UserService {
@@ -24,13 +28,18 @@ public class UserService {
 
     @Value("${app.confirmation-url}")
     private String confirmationUrl;
+    @Value("${app.reset-password-url}")
+    private String resetPasswordUrl;
+    @Autowired
+    private TemplateEngine templateEngine;
 
     @Autowired
-    public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder, JavaMailSender javaMailSender, JwtTokenUtil jwtTokenUtil) {
+    public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder, JavaMailSender javaMailSender, JwtTokenUtil jwtTokenUtil, TemplateEngine templateEngine) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
         this.javaMailSender = javaMailSender;
         this.jwtTokenUtil = jwtTokenUtil;
+        this.templateEngine = templateEngine;
     }
 
     public void registerUser(UserDto userDto) throws UserRegistrationException {
@@ -61,8 +70,11 @@ public class UserService {
         // Save the user in the repository
         userRepository.save(user);
 
-        // Send confirmation email to the user
-        sendConfirmationEmail(user.getEmail(), confirmationToken);
+        // Gửi email xác nhận đăng ký cho user
+        String subject = "Confirm Your Registration";
+        String greeting = "Welcome, " + userDto.getUsername();
+        String message = "Please confirm your registration by clicking the link below:";
+        sendConfirmationEmail(user.getEmail(), subject, greeting, message, confirmationToken);
     }
 
     public void confirmUser(String confirmationToken) throws UserRegistrationException {
@@ -91,21 +103,62 @@ public class UserService {
         return accessToken;
     }
 
+    public void sendPasswordResetEmail(String email) throws UserRegistrationException {
+        User user = userRepository.findByEmail(email);
+        if (user == null) {
+            throw new UserRegistrationException("User not found");
+        }
 
-    private void sendConfirmationEmail(String email, String confirmationToken) {
-        // Compose the confirmation email
-        String subject = "Confirm Your Registration";
-        String body = "Please confirm your registration by clicking the link below:\n\n"
-                + confirmationUrl + "?token=" + confirmationToken;
+        if (!user.isConfirmed()) {
+            throw new UserRegistrationException("User not confirmed");
+        }
 
-        // Create a new email message
-        SimpleMailMessage message = new SimpleMailMessage();
-        message.setTo(email);
-        message.setSubject(subject);
-        message.setText(body);
+        // Generate a password reset token
+        String resetToken = UUID.randomUUID().toString();
 
-        // Send the email
-        javaMailSender.send(message);
+        // Update the user's reset token in the database
+        user.setConfirmationToken(resetToken);
+        userRepository.save(user);
+
+        // Gửi email xác nhận đăng ký cho user
+        String subject = "Reset Your Password";
+        String greeting = "Welcome, " + user.getUsername();
+        String message = "Please reset your password by clicking the link below:";
+        sendConfirmationEmail(user.getEmail(), subject, greeting, message, resetToken);
+    }
+
+    private void sendConfirmationEmail(String email, String subject, String greeting, String message, String confirmationToken) throws UserRegistrationException {
+        Context context = new Context();
+        context.setVariable("title", subject);
+        context.setVariable("greeting", greeting);
+        context.setVariable("message", message);
+        context.setVariable("resetPasswordUrl", resetPasswordUrl + "?token=" + confirmationToken);
+
+        String body = templateEngine.process("user/sendMail", context);
+
+        // Tạo email mới
+        MimeMessage mimeMessage = javaMailSender.createMimeMessage();
+        try {
+            MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, true);
+            helper.setTo(email);
+            helper.setSubject(subject);
+            helper.setText(body, true);
+            javaMailSender.send(mimeMessage);
+        } catch (MessagingException e) {
+            throw new UserRegistrationException("Failed to send confirmation email");
+        }
+    }
+
+    public void resetPassword(String resetToken, String newPassword) throws UserRegistrationException {
+        User user = userRepository.findByConfirmationToken(resetToken);
+        if (user == null) {
+            throw new UserRegistrationException("Invalid reset token");
+        }
+
+        // Set the new password
+        user.setPassword(passwordEncoder.encode(newPassword));
+        user.setConfirmationToken(null);
+        userRepository.save(user);
     }
 }
 

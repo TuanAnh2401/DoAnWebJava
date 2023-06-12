@@ -11,6 +11,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Map;
+
 @RestController
 @RequestMapping("/api/users")
 public class UserController {
@@ -54,6 +56,28 @@ public class UserController {
             }
         } catch (UserRegistrationException e) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new LoginResponseDto(null));
+        }
+    }
+    @PostMapping("/forgot-password")
+    public ResponseEntity<String> forgotPassword(@RequestBody Map<String, String> request) {
+        String email = request.get("email");
+        try {
+            userService.sendPasswordResetEmail(email);
+            return ResponseEntity.ok().body("Password reset email sent");
+        } catch (UserRegistrationException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+
+    @PostMapping("/reset-password")
+    public ResponseEntity<String> resetPassword(@RequestBody Map<String, String> requestParams) {
+        String resetToken = requestParams.get("token");
+        String newPassword = requestParams.get("password");
+        try {
+            userService.resetPassword(resetToken, newPassword);
+            return ResponseEntity.ok("Password reset successfully");
+        } catch (UserRegistrationException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
 }

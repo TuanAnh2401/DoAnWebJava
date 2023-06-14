@@ -2,7 +2,9 @@ package com.example.DoAnWebJava.controller;
 
 import com.example.DoAnWebJava.dto.LoginDto;
 import com.example.DoAnWebJava.dto.LoginResponseDto;
+import com.example.DoAnWebJava.dto.UpdateDto;
 import com.example.DoAnWebJava.dto.UserDto;
+import com.example.DoAnWebJava.entities.User;
 import com.example.DoAnWebJava.repositories.UserRegistrationException;
 import com.example.DoAnWebJava.service.UserService;
 import jakarta.validation.Valid;
@@ -80,6 +82,29 @@ public class UserController {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
+    @PutMapping("/{username}")
+    public ResponseEntity<UserDto> updateUser(@PathVariable String username, @RequestBody UpdateDto updateDto) {
+        try {
+            User updatedUser = userService.updateUser(username, updateDto);
+            if (updatedUser != null) {
+                UserDto updatedUserDto = new UserDto();
+                updatedUserDto.setUsername(updatedUser.getUsername());
+                updatedUserDto.setName(updatedUser.getName());
+                updatedUserDto.setAvt(updatedUser.getAvt());
+                updatedUserDto.setPassword(updatedUser.getPassword());
+                updatedUserDto.setEmail(updatedUser.getEmail());
+                updatedUserDto.setPhone(updatedUser.getPhone());
+                updatedUserDto.setAddress(updatedUser.getAddress());
+
+                return ResponseEntity.ok(updatedUserDto);
+            } else {
+                return ResponseEntity.notFound().build();
+            }
+        } catch (UserRegistrationException e) {
+            return ResponseEntity.badRequest().body(null);
+        }
+    }
+
 }
 
 

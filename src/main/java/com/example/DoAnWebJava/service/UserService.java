@@ -1,7 +1,9 @@
 package com.example.DoAnWebJava.service;
 
+import com.example.DoAnWebJava.dto.UpdateDto;
 import com.example.DoAnWebJava.dto.UserDto;
 import com.example.DoAnWebJava.entities.User;
+import com.example.DoAnWebJava.repositories.RoleRepository;
 import com.example.DoAnWebJava.repositories.UserRegistrationException;
 import com.example.DoAnWebJava.repositories.UserRepository;
 import com.example.DoAnWebJava.util.JwtTokenUtil;
@@ -22,6 +24,7 @@ import org.thymeleaf.context.Context;
 public class UserService {
 
     private final UserRepository userRepository;
+    private final RoleRepository roleRepository;
     private final PasswordEncoder passwordEncoder;
     private final JavaMailSender javaMailSender;
     private final JwtTokenUtil jwtTokenUtil;
@@ -34,7 +37,8 @@ public class UserService {
     private TemplateEngine templateEngine;
 
     @Autowired
-    public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder, JavaMailSender javaMailSender, JwtTokenUtil jwtTokenUtil, TemplateEngine templateEngine) {
+    public UserService(RoleRepository roleRepository, UserRepository userRepository, PasswordEncoder passwordEncoder, JavaMailSender javaMailSender, JwtTokenUtil jwtTokenUtil, TemplateEngine templateEngine) {
+        this.roleRepository = roleRepository;
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
         this.javaMailSender = javaMailSender;
@@ -63,6 +67,9 @@ public class UserService {
                 .password(passwordEncoder.encode(userDto.getPassword()))
                 .email(userDto.getEmail())
                 .phone(userDto.getPhone())
+                .name(userDto.getName())
+                .avt(userDto.getAvt())
+                .address(userDto.getAddress())
                 .confirmed(false)
                 .confirmationToken(confirmationToken)
                 .build();
@@ -70,11 +77,17 @@ public class UserService {
         // Save the user in the repository
         userRepository.save(user);
 
+        Long roleId = roleRepository.findByName("USER").getId();
+        Long userId = user.getId();
+        if (roleId != 0 && userId != 0) {
+            userRepository.addRoleToUser(userId, roleId);
+        }
         // Gửi email xác nhận đăng ký cho user
         String subject = "Confirm Your Registration";
-        String greeting = "Welcome, " + userDto.getUsername();
+        String greeting = "Welcome, " + userDto.getName();
         String message = "Please confirm your registration by clicking the link below:";
-        sendConfirmationEmail(user.getEmail(), subject, greeting, message, confirmationToken);
+        String url = confirmationUrl + "?token=" + confirmationToken;
+        sendConfirmationEmail(user.getEmail(), subject, greeting, message, url);
     }
 
     public void confirmUser(String confirmationToken) throws UserRegistrationException {
@@ -122,9 +135,10 @@ public class UserService {
 
         // Gửi email xác nhận đăng ký cho user
         String subject = "Reset Your Password";
-        String greeting = "Welcome, " + user.getUsername();
+        String greeting = "Welcome, " + user.getName();
         String message = "Please reset your password by clicking the link below:";
-        sendConfirmationEmail(user.getEmail(), subject, greeting, message, resetToken);
+        String url =  resetPasswordUrl + "?token=" + resetToken;
+        sendConfirmationEmail(user.getEmail(), subject, greeting, message, url);
     }
 
     private void sendConfirmationEmail(String email, String subject, String greeting, String message, String confirmationToken) throws UserRegistrationException {
@@ -132,7 +146,7 @@ public class UserService {
         context.setVariable("title", subject);
         context.setVariable("greeting", greeting);
         context.setVariable("message", message);
-        context.setVariable("resetPasswordUrl", resetPasswordUrl + "?token=" + confirmationToken);
+        context.setVariable("Url", confirmationToken);
 
         String body = templateEngine.process("user/sendMail", context);
 
@@ -160,6 +174,30 @@ public class UserService {
         user.setConfirmationToken(null);
         userRepository.save(user);
     }
+    public User updateUser(String username, UpdateDto updateDto) throws UserRegistrationException {
+        User existingUser = userRepository.findByUsername(username);
+        if (existingUser != null) {
+            // Cập nhật thông tin từ UpdateDto vào đối tượng User hiện có
+            if (updateDto.getPassword() != null) {
+                existingUser.setPassword(passwordEncoder.encode(updateDto.getPassword()));
+            }
+            if (updateDto.getName() != null) {
+                existingUser.setName(updateDto.getName());
+            }
+            if (updateDto.getAvt() != null) {
+                existingUser.setAvt(updateDto.getAvt());
+            }
+            if (updateDto.getAddress() != null) {
+                existingUser.setAddress(updateDto.getAddress());
+            }
+            User updatedUser = userRepository.save(existingUser);
+
+            return updatedUser;
+        } else {
+            throw new UserRegistrationException("User not found with username: " + username);
+        }
+    }
+
 }
 
 

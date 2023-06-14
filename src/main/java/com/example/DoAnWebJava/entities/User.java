@@ -40,6 +40,14 @@ public class User implements UserDetails {
     @NotBlank(message = "Password is required")
     private String password;
 
+    @Column(name = "name", length = 50)
+    @NotBlank(message = "name is required")
+    @Size(min = 1, max = 50, message = "Name must be between 1 and 50 characters")
+    private String name;
+
+    @Column(name = "avt")
+    private String avt;
+
     @Column(name = "email", length = 50, unique = true)
     @NotBlank(message = "Email is required")
     @Size(min = 1, max = 50, message = "Email must be between 1 and 50 characters")
@@ -51,13 +59,18 @@ public class User implements UserDetails {
     @Pattern(regexp = "^(0|84)([0-9]{9})$", message = "Phone must be number")
     private String phone;
 
+    @Column(name = "address")
+    @NotBlank(message = "Address is required")
+    private String address;
+
     @Column(name = "confirmed")
     private boolean confirmed;
 
     @Column(name = "confirmation_token", length = 100)
     private String confirmationToken;
+
     @ManyToMany(fetch = FetchType.EAGER)
-    @JoinTable(name = "tb_user-role",
+    @JoinTable(name = "tb_user_role",
             joinColumns = @JoinColumn(name = "user_id"),
             inverseJoinColumns = @JoinColumn(name = "role_id"))
     private Set<Role> roles = new HashSet<>();

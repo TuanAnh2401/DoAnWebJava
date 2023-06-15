@@ -78,11 +78,11 @@ public class Product extends CommonAbstract {
     private boolean isStatus;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "productCategoryId", referencedColumnName = "id", insertable = false, updatable = false)
+    @JoinColumn(name = "productCategoryId", referencedColumnName = "id")
     private ProductCategory productCategory;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "supplierId", referencedColumnName = "id", insertable = false, updatable = false)
+    @JoinColumn(name = "supplierId", referencedColumnName = "id")
     private Supplier supplier;
 
     @OneToMany(mappedBy = "product", cascade = CascadeType.ALL)

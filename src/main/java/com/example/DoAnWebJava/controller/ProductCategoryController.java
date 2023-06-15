@@ -40,7 +40,7 @@ public class ProductCategoryController {
     }
 
 
-    @GetMapping("/edit/{id}")
+    @GetMapping("/{id}")
     public ResponseEntity<ProductCategory> getProductCategoryById(@PathVariable int id) {
         ProductCategory productCategory = productCategoryService.getProductCategoryById(id);
         if (productCategory != null) {

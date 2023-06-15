@@ -1,5 +1,6 @@
 package com.example.DoAnWebJava.controller;
 
+import com.example.DoAnWebJava.dto.ProductDto;
 import com.example.DoAnWebJava.entities.Product;
 import com.example.DoAnWebJava.service.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,49 +21,50 @@ public class ProductController {
     }
 
     @GetMapping("/getAll")
-    public ResponseEntity<List<Product>> getAllProducts() {
-        List<Product> allProducts = productService.getAllProducts();
+    public ResponseEntity<List<ProductDto>> getAllProducts() {
+        List<ProductDto> allProducts = productService.getAllProductDtos();
         return ResponseEntity.ok(allProducts);
     }
 
     @GetMapping("/getActive")
-    public ResponseEntity<List<Product>> getActiveProducts() {
-        List<Product> activeProducts = productService.getActiveProducts();
+    public ResponseEntity<List<ProductDto>> getActiveProducts() {
+        List<ProductDto> activeProducts = productService.getActiveProductDtos();
         return ResponseEntity.ok(activeProducts);
     }
 
     @GetMapping("/getInactive")
-    public ResponseEntity<List<Product>> getInactiveProducts() {
-        List<Product> inactiveProducts = productService.getInactiveProducts();
+    public ResponseEntity<List<ProductDto>> getInactiveProducts() {
+        List<ProductDto> inactiveProducts = productService.getInactiveProductDtos();
         return ResponseEntity.ok(inactiveProducts);
     }
+
     @GetMapping("/getHome/{isHome}")
-    public ResponseEntity<List<Product>> getProductsByIsHome(@PathVariable boolean isHome) {
-        List<Product> products = productService.getProductsByIsHome(isHome);
+    public ResponseEntity<List<ProductDto>> getProductsByIsHome(@PathVariable boolean isHome) {
+        List<ProductDto> products = productService.getProductDtosByIsHome(isHome);
         return ResponseEntity.ok(products);
     }
 
     @GetMapping("/getSale/{isSale}")
-    public ResponseEntity<List<Product>> getProductsByIsSale(@PathVariable boolean isSale) {
-        List<Product> products = productService.getProductsByIsSale(isSale);
+    public ResponseEntity<List<ProductDto>> getProductsByIsSale(@PathVariable boolean isSale) {
+        List<ProductDto> products = productService.getProductDtosByIsSale(isSale);
         return ResponseEntity.ok(products);
     }
 
     @GetMapping("/getHot/{isHot}")
-    public ResponseEntity<List<Product>> getProductsByIsHot(@PathVariable boolean isHot) {
-        List<Product> products = productService.getProductsByIsHot(isHot);
+    public ResponseEntity<List<ProductDto>> getProductsByIsHot(@PathVariable boolean isHot) {
+        List<ProductDto> products = productService.getProductDtosByIsHot(isHot);
         return ResponseEntity.ok(products);
     }
 
     @GetMapping("/getStatus/{isStatus}")
-    public ResponseEntity<List<Product>> getProductsByIsStatus(@PathVariable boolean isStatus) {
-        List<Product> products = productService.getProductsByIsStatus(isStatus);
+    public ResponseEntity<List<ProductDto>> getProductsByIsStatus(@PathVariable boolean isStatus) {
+        List<ProductDto> products = productService.getProductDtosByIsStatus(isStatus);
         return ResponseEntity.ok(products);
     }
 
-    @GetMapping("/get/{id}")
-    public ResponseEntity<Product> getProductById(@PathVariable int id) {
-        Product product = productService.getProductById(id);
+    @GetMapping("/{id}")
+    public ResponseEntity<ProductDto> getProductById(@PathVariable int id) {
+        ProductDto product = productService.getProductDtoById(id);
         if (product != null) {
             return ResponseEntity.ok(product);
         } else {
@@ -71,26 +73,35 @@ public class ProductController {
     }
 
     @PostMapping("/add")
-    public ResponseEntity<String> addProduct(@RequestBody Product product) {
-        if (product != null) {
-            Product addedProduct = productService.addProduct(product);
+    public ResponseEntity<String> addProduct(@RequestBody ProductDto productDto) {
+        if (productDto != null) {
+            ProductDto addedProduct = productService.addProduct(productDto);
             return ResponseEntity.ok("Product added successfully with ID: " + addedProduct.getId());
         }
         return ResponseEntity.badRequest().body("Invalid request body");
     }
 
     @PutMapping("/update/{id}")
-    public ResponseEntity<String> updateProduct(@PathVariable int id, @RequestBody Product product) {
-        if (product != null) {
-            Product updatedProduct = productService.updateProduct(id, product);
-            return ResponseEntity.ok("Product updated successfully");
+    public ResponseEntity<String> updateProduct(@PathVariable int id, @RequestBody ProductDto productDto) {
+        if (productDto != null) {
+            ProductDto updatedProduct = productService.updateProduct(id, productDto);
+            if (updatedProduct != null) {
+                return ResponseEntity.ok("Product updated successfully");
+            } else {
+                return ResponseEntity.notFound().build();
+            }
         }
         return ResponseEntity.badRequest().body("Invalid request body");
     }
 
     @DeleteMapping("/delete/{id}")
     public ResponseEntity<String> deleteProduct(@PathVariable int id) {
-        productService.deleteProduct(id);
-        return ResponseEntity.ok("Product deleted successfully");
+        boolean deleted = productService.deleteProduct(id);
+        if (deleted) {
+            return ResponseEntity.ok("Product deleted successfully");
+        } else {
+            return ResponseEntity.notFound().build();
+        }
     }
 }
+

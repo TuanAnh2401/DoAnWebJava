@@ -37,7 +37,7 @@ public class SupplierController {
         return ResponseEntity.ok(inactiveSuppliers);
     }
 
-    @GetMapping("/get/{id}")
+    @GetMapping("/{id}")
     public ResponseEntity<Supplier> getSupplierById(@PathVariable int id) {
         Supplier supplier = supplierService.getSupplierById(id);
         if (supplier != null) {

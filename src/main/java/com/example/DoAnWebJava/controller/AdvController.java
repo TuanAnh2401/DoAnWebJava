@@ -40,7 +40,7 @@ public class AdvController {
         return ResponseEntity.badRequest().body("Invalid request body");
     }
 
-    @GetMapping("/edit/{id}")
+    @GetMapping("/{id}")
     public ResponseEntity<Adv> editAdv(@PathVariable int id) {
         try {
             Adv adv = advService.editAdv(id);

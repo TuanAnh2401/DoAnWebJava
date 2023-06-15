@@ -22,7 +22,7 @@ public class ContactService {
     }
 
     public Contact getContactById(int id) {
-        return contactRepository.findById(id);
+        return contactRepository.findById(id).orElse(null);
     }
 
     public Contact createContact(Contact contact) {

@@ -1,4 +1,5 @@
 package com.example.DoAnWebJava.repositories;
+import com.example.DoAnWebJava.entities.Contact;
 import com.example.DoAnWebJava.entities.Product;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
@@ -12,4 +13,5 @@ public interface ProductRepository extends JpaRepository<Product, Integer> {
     List<Product> findByIsSale(boolean isSale);
     List<Product> findByIsHot(boolean isHot);
     List<Product> findByIsStatus(boolean isStatus);
+
 }

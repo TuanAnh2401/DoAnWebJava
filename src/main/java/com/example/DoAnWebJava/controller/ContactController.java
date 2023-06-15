@@ -26,7 +26,7 @@ public class ContactController {
         return ResponseEntity.ok(contacts);
     }
 
-    @GetMapping("/edit/{id}")
+    @GetMapping("/{id}")
     public ResponseEntity<Contact> getContactById(@PathVariable int id) {
         Contact contact = contactService.getContactById(id);
         if (contact != null) {

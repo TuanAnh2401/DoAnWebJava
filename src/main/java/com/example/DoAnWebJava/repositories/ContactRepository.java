@@ -9,7 +9,6 @@ import java.util.List;
 @Repository
 public interface ContactRepository extends JpaRepository<Contact, Integer> {
 
-    Contact findById(int id);
     List<Contact> findByIsActivate(boolean isActivate);
 
 }

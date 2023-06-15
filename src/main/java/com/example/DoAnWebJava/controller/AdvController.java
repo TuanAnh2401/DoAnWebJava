@@ -24,17 +24,12 @@ public class AdvController {
         return ResponseEntity.ok(all);
     }
 
-    @GetMapping("/getActive")
-    public ResponseEntity<List<Adv>> getActiveAdvs() {
-        List<Adv> active = advService.getActiveAdvs();
-        return ResponseEntity.ok(active);
+    @GetMapping("/getByActivate/{isActivate}")
+    public ResponseEntity<List<Adv>> getAdvsByActivate(@PathVariable boolean isActivate) {
+        List<Adv> advs = advService.getAdvsByActivate(isActivate);
+        return ResponseEntity.ok(advs);
     }
 
-    @GetMapping("/getInactive")
-    public ResponseEntity<List<Adv>> getInactiveAdvs() {
-        List<Adv> inactive = advService.getInactiveAdvs();
-        return ResponseEntity.ok(inactive);
-    }
 
     @PostMapping("/add")
     public ResponseEntity<String> addAdv(@RequestBody Adv model) {

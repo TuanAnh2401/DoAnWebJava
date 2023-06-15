@@ -20,13 +20,10 @@ public class AdvService {
         return advRepository.findAll();
     }
 
-    public List<Adv> getActiveAdvs() {
-        return advRepository.findByIsActivate(true);
+    public List<Adv> getAdvsByActivate(boolean isActivate) {
+        return advRepository.findByIsActivate(isActivate);
     }
 
-    public List<Adv> getInactiveAdvs() {
-        return advRepository.findByIsActivate(false);
-    }
 
     public Adv addAdv(Adv model) {
         model.setCreatedDate(new Date());

@@ -34,7 +34,7 @@ public class ProductCategory extends CommonAbstract {
     @NotBlank(message = "Thêm ảnh sản phẩm")
     private String image;
 
-    @Column(nullable = false)
+    @Column
     private boolean isActivate;
 
     @OneToMany(mappedBy = "productCategory", cascade = CascadeType.ALL)

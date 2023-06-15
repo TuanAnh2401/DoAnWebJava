@@ -8,5 +8,5 @@ import java.util.List;
 
 @Repository
 public interface AdvRepository extends JpaRepository<Adv, Integer> {
-    List<Adv> findByActivate(boolean activate);
+    List<Adv> findByIsActivate(boolean isActivate);
 }

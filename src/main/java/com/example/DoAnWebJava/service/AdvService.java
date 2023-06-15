@@ -21,11 +21,11 @@ public class AdvService {
     }
 
     public List<Adv> getActiveAdvs() {
-        return advRepository.findByActivate(true);
+        return advRepository.findByIsActivate(true);
     }
 
     public List<Adv> getInactiveAdvs() {
-        return advRepository.findByActivate(false);
+        return advRepository.findByIsActivate(false);
     }
 
     public Adv addAdv(Adv model) {

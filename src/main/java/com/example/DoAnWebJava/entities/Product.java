@@ -5,6 +5,7 @@ import com.example.DoAnWebJava.validators.annotations.AllowHtml;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.DecimalMin;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.*;
 import org.hibernate.validator.constraints.Range;
@@ -44,12 +45,12 @@ public class Product extends CommonAbstract {
     private String image;
 
     @Column(nullable = false)
-    @NotBlank(message = "Giá nhập không được để trống")
+    @NotNull
     @DecimalMin(value = "0.00", inclusive = false, message = "Giá nhập phải lớn hơn 0.")
     private BigDecimal originalPrice;
 
     @Column(nullable = false)
-    @NotBlank(message = "Giá không được để trống")
+    @NotNull
     @DecimalMin(value = "0.00", inclusive = false, message = "Giá phải lớn hơn 0.")
     private BigDecimal price;
 
@@ -57,11 +58,11 @@ public class Product extends CommonAbstract {
     private BigDecimal priceSale;
 
     @Column(nullable = false)
-    @NotBlank(message = "Số lượng không được để trống")
+    @NotNull
     @Range(min = 0, message = "Số lượng phải lớn hơn hoặc bằng 0.")
     private int quantity;
 
-    @Column(nullable = false)
+    @Column
     private boolean isHome;
 
     @Column

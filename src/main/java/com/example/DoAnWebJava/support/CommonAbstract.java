@@ -13,14 +13,9 @@ import java.util.Date;
 @NoArgsConstructor
 @AllArgsConstructor
 public abstract class CommonAbstract {
-    @Column
-    private String createdBy;
 
     @Column
     private Date createdDate;
-
-    @Column
-    private String modifiedBy;
 
     @Column
     private Date modifiedDate;

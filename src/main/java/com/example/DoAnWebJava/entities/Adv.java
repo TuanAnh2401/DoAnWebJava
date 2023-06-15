@@ -37,7 +37,7 @@ public class Adv extends CommonAbstract {
     private String link;
 
     @Column
-    private boolean isActivate;
+    private boolean activate;
 
 }
 

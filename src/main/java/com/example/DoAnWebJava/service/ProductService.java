@@ -35,13 +35,10 @@ public class ProductService {
         return convertToDtoList(products);
     }
 
-    public List<ProductDto> getActiveProductDtos() {
-        List<Product> products = productRepository.findByIsActivate(true);
-        return convertToDtoList(products);
-    }
 
-    public List<ProductDto> getInactiveProductDtos() {
-        List<Product> products = productRepository.findByIsActivate(false);
+
+    public List<ProductDto> getProductDtosByIsActive(boolean isActive) {
+        List<Product> products = productRepository.findByIsActivate(isActive);
         return convertToDtoList(products);
     }
 

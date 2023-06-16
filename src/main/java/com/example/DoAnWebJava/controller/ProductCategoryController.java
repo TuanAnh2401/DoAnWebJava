@@ -1,6 +1,7 @@
 package com.example.DoAnWebJava.controller;
 
 import com.example.DoAnWebJava.entities.Adv;
+import com.example.DoAnWebJava.entities.Contact;
 import com.example.DoAnWebJava.entities.ProductCategory;
 import com.example.DoAnWebJava.repositories.UserRegistrationException;
 import com.example.DoAnWebJava.service.ProductCategoryService;
@@ -27,16 +28,12 @@ public class ProductCategoryController {
         return ResponseEntity.ok(allProductCategories);
     }
 
-    @GetMapping("/getActive")
-    public ResponseEntity<List<ProductCategory>> getActiveProductCategories() {
-        List<ProductCategory> activeProductCategories = productCategoryService.getActiveProductCategories();
-        return ResponseEntity.ok(activeProductCategories);
-    }
 
-    @GetMapping("/getInactive")
-    public ResponseEntity<List<ProductCategory>> getInactiveProductCategories() {
-        List<ProductCategory> inactiveProductCategories = productCategoryService.getInactiveProductCategories();
-        return ResponseEntity.ok(inactiveProductCategories);
+
+    @GetMapping("/getByActivate/{isActivate}")
+    public ResponseEntity<List<ProductCategory>> getProductCategoriesByActivate(@PathVariable boolean isActivate) {
+        List<ProductCategory> activeProductCategories = productCategoryService.getProductCategoriesByActivate(isActivate);
+        return ResponseEntity.ok(activeProductCategories);
     }
 
 

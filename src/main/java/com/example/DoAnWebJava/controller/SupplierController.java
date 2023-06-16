@@ -1,8 +1,9 @@
 package com.example.DoAnWebJava.controller;
 
-import com.example.DoAnWebJava.entities.Supplier;
+import com.example.DoAnWebJava.dto.SupplierDto;
 import com.example.DoAnWebJava.service.SupplierService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -20,54 +21,47 @@ public class SupplierController {
     }
 
     @GetMapping("/getAll")
-    public ResponseEntity<List<Supplier>> getAllSuppliers() {
-        List<Supplier> allSuppliers = supplierService.getAllSuppliers();
-        return ResponseEntity.ok(allSuppliers);
+    public ResponseEntity<List<SupplierDto>> getAllSuppliers() {
+        List<SupplierDto> supplierDtos = supplierService.getAllSupplierDtos();
+        return new ResponseEntity<>(supplierDtos, HttpStatus.OK);
+    }
+    @GetMapping("/getActive/{isActive}")
+    public ResponseEntity<List<SupplierDto>> getActiveSuppliers(@PathVariable boolean isActive) {
+        List<SupplierDto> activeSupplierDtos = supplierService.getSupplierDtosByIsActive(isActive);
+        return new ResponseEntity<>(activeSupplierDtos, HttpStatus.OK);
     }
 
-    @GetMapping("/getActive")
-    public ResponseEntity<List<Supplier>> getActiveSuppliers() {
-        List<Supplier> activeSuppliers = supplierService.getActiveSuppliers();
-        return ResponseEntity.ok(activeSuppliers);
-    }
-
-    @GetMapping("/getInactive")
-    public ResponseEntity<List<Supplier>> getInactiveSuppliers() {
-        List<Supplier> inactiveSuppliers = supplierService.getInactiveSuppliers();
-        return ResponseEntity.ok(inactiveSuppliers);
-    }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Supplier> getSupplierById(@PathVariable int id) {
-        Supplier supplier = supplierService.getSupplierById(id);
-        if (supplier != null) {
-            return ResponseEntity.ok(supplier);
-        } else {
-            return ResponseEntity.notFound().build();
+    public ResponseEntity<SupplierDto> getSupplierById(@PathVariable int id) {
+        SupplierDto supplierDto = supplierService.getSupplierDtoById(id);
+        if (supplierDto != null) {
+            return new ResponseEntity<>(supplierDto, HttpStatus.OK);
         }
+        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
 
     @PostMapping("/add")
-    public ResponseEntity<String> addSupplier(@RequestBody Supplier supplier) {
-        if (supplier != null) {
-            Supplier addedSupplier = supplierService.addSupplier(supplier);
-            return ResponseEntity.ok("Supplier added successfully with ID: " + addedSupplier.getId());
-        }
-        return ResponseEntity.badRequest().body("Invalid request body");
+    public ResponseEntity<SupplierDto> addSupplier(@RequestBody SupplierDto supplierDto) {
+        SupplierDto addedSupplier = supplierService.addSupplier(supplierDto);
+        return new ResponseEntity<>(addedSupplier, HttpStatus.CREATED);
     }
 
     @PutMapping("/update/{id}")
-    public ResponseEntity<String> updateSupplier(@PathVariable int id, @RequestBody Supplier supplier) {
-        if (supplier != null) {
-            Supplier updatedSupplier = supplierService.updateSupplier(id, supplier);
-            return ResponseEntity.ok("Supplier updated successfully");
+    public ResponseEntity<SupplierDto> updateSupplier(@PathVariable int id, @RequestBody SupplierDto supplierDto) {
+        SupplierDto updatedSupplier = supplierService.updateSupplier(id, supplierDto);
+        if (updatedSupplier != null) {
+            return new ResponseEntity<>(updatedSupplier, HttpStatus.OK);
         }
-        return ResponseEntity.badRequest().body("Invalid request body");
+        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
 
     @DeleteMapping("/delete/{id}")
-    public ResponseEntity<String> deleteSupplier(@PathVariable int id) {
-        supplierService.deleteSupplier(id);
-        return ResponseEntity.ok("Supplier deleted successfully");
+    public ResponseEntity<Void> deleteSupplier(@PathVariable int id) {
+        boolean deleted = supplierService.deleteSupplier(id);
+        if (deleted) {
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        }
+        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
 }

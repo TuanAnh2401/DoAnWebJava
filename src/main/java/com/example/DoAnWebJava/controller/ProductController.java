@@ -26,16 +26,10 @@ public class ProductController {
         return ResponseEntity.ok(allProducts);
     }
 
-    @GetMapping("/getActive")
-    public ResponseEntity<List<ProductDto>> getActiveProducts() {
-        List<ProductDto> activeProducts = productService.getActiveProductDtos();
-        return ResponseEntity.ok(activeProducts);
-    }
-
-    @GetMapping("/getInactive")
-    public ResponseEntity<List<ProductDto>> getInactiveProducts() {
-        List<ProductDto> inactiveProducts = productService.getInactiveProductDtos();
-        return ResponseEntity.ok(inactiveProducts);
+    @GetMapping("/getActive/{isActive}")
+    public ResponseEntity<List<ProductDto>> getActiveProducts(@PathVariable boolean isActive) {
+        List<ProductDto> products = productService.getProductDtosByIsActive(isActive);
+        return ResponseEntity.ok(products);
     }
 
     @GetMapping("/getHome/{isHome}")

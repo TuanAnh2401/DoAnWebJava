@@ -1,5 +1,7 @@
 package com.example.DoAnWebJava.dto;
 
+import com.example.DoAnWebJava.support.CommonAbstract;
+import com.example.DoAnWebJava.support.CommonAbstractDto;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -11,7 +13,7 @@ import java.math.BigDecimal;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class ProductDto {
+public class ProductDto extends CommonAbstractDto {
     private int id;
     private String title;
     private String description;

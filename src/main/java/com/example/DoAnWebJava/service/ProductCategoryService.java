@@ -1,6 +1,7 @@
 package com.example.DoAnWebJava.service;
 
 import com.example.DoAnWebJava.entities.Adv;
+import com.example.DoAnWebJava.entities.Contact;
 import com.example.DoAnWebJava.entities.ProductCategory;
 import com.example.DoAnWebJava.repositories.ProductCategoryRepository;
 import com.example.DoAnWebJava.repositories.UserRegistrationException;
@@ -25,12 +26,9 @@ public class ProductCategoryService {
         return productCategoryRepository.findAll();
     }
 
-    public List<ProductCategory> getActiveProductCategories() {
-        return productCategoryRepository.findByIsActivate(true);
-    }
 
-    public List<ProductCategory> getInactiveProductCategories() {
-        return productCategoryRepository.findByIsActivate(false);
+    public List<ProductCategory> getProductCategoriesByActivate(boolean isActivate) {
+        return productCategoryRepository.findByIsActivate(isActivate);
     }
 
 

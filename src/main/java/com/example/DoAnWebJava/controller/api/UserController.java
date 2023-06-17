@@ -1,4 +1,4 @@
-package com.example.DoAnWebJava.controller;
+package com.example.DoAnWebJava.controller.api;
 
 import com.example.DoAnWebJava.dto.LoginDto;
 import com.example.DoAnWebJava.dto.LoginResponseDto;

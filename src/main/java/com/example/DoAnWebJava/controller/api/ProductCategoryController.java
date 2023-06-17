@@ -1,4 +1,4 @@
-package com.example.DoAnWebJava.controller;
+package com.example.DoAnWebJava.controller.api;
 
 import com.example.DoAnWebJava.entities.Adv;
 import com.example.DoAnWebJava.entities.Contact;

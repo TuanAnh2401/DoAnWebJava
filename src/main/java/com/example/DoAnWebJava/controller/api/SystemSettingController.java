@@ -1,4 +1,4 @@
-package com.example.DoAnWebJava.controller;
+package com.example.DoAnWebJava.controller.api;
 
 import com.example.DoAnWebJava.dto.SettingSystemDto;
 import com.example.DoAnWebJava.service.SystemSettingService;

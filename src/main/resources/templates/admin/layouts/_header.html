@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <!-- Font Awesome -->
+  <link th:fragment="link-css" rel="stylesheet" th:href="@{/content/clients/plugins/fontawesome-free/css/all.min.css}">
+  <!-- daterange picker -->
+  <link th:fragment="link-css" rel="stylesheet" th:href="@{/content/clients/plugins/daterangepicker/daterangepicker.css}">
+  <!-- iCheck for checkboxes and radio inputs -->
+  <link th:fragment="link-css" rel="stylesheet" th:href="@{/content/clients/plugins/icheck-bootstrap/icheck-bootstrap.min.css}">
+  <!-- Bootstrap Color Picker -->
+  <link th:fragment="link-css" rel="stylesheet" th:href="@{/content/clients/plugins/bootstrap-colorpicker/css/bootstrap-colorpicker.min.css}">
+  <!-- Tempusdominus Bootstrap 4 -->
+  <link th:fragment="link-css" rel="stylesheet" th:href="@{/content/clients/plugins/tempusdominus-bootstrap-4/css/tempusdominus-bootstrap-4.min.css}">
+  <!-- Select2 -->
+  <link th:fragment="link-css" rel="stylesheet" th:href="@{/content/clients/plugins/select2/css/select2.min.css}">
+  <link th:fragment="link-css" rel="stylesheet" th:href="@{/content/clients/plugins/select2-bootstrap4-theme/select2-bootstrap4.min.css}">
+  <!-- Bootstrap4 Duallistbox -->
+  <link th:fragment="link-css" rel="stylesheet" th:href="@{/content/clients/plugins/bootstrap4-duallistbox/bootstrap-duallistbox.min.css}">
+  <!-- BS Stepper -->
+  <link th:fragment="link-css" rel="stylesheet" th:href="@{/content/clients/plugins/bs-stepper/css/bs-stepper.min.css}">
+  <!-- dropzonejs -->
+  <link th:fragment="link-css" rel="stylesheet" th:href="@{/content/clients/plugins/dropzone/min/dropzone.min.css}">
+  <!-- Theme style -->
+  <link th:fragment="link-css" rel="stylesheet" th:href="@{/content/clients/dist/css/adminlte.min.css}">
+  <link th:fragment="link-css" rel="stylesheet" th:href="@{/content/PagedList.css}">
+</head>
+<body class="hold-transition sidebar-mini">
+<header th:fragment="header">
+  <nav class="main-header navbar navbar-expand navbar-white navbar-light">
+    <!-- Right navbar links -->
+    <ul class="navbar-nav ml-auto">
+      <!-- Messages Dropdown Menu -->
+      <li class="nav-item dropdown" id="partialChatDiv">
+        <!-- Replace the following line with appropriate Thymeleaf syntax -->
+        <!-- @Html.Action("Partial_Chat", "ChatAdmin") -->
+      </li>
+      <!-- Notifications Dropdown Menu -->
+      <li class="nav-item dropdown">
+        <!-- Replace the following line with appropriate Thymeleaf syntax -->
+        <!-- @Html.Action("Partial_Contact", "Contact") -->
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" data-widget="fullscreen" href="#" role="button">
+          <i class="fas fa-expand-arrows-alt"></i>
+        </a>
+      </li>
+    </ul>
+  </nav>
+  <!-- Main Sidebar Container -->
+  <aside class="main-sidebar sidebar-dark-primary elevation-4">
+    <!-- Brand Logo -->
+    <a href="/admin/home" class="brand-link">
+      <img th:src="@{__SettingLogo__}" alt="AdminLTE Logo" class="brand-image img-circle elevation-3" style="opacity: .8">
+      <span class="brand-text font-weight-light" th:text="${__SettingTitle__}"></span>
+    </a>
+    <!-- Include the appropriate Thymeleaf fragment for the sidebar -->
+    <div th:replace="~{admin/layouts/_sidebar :: sidebar}"></div>
+  </aside>
+  <!-- /.content-wrapper -->
+</header>
+<div th:fragment="content"></div>
+<div th:replace="~{admin/layouts/_footer :: footer}"></div>
+</body>
+</html>

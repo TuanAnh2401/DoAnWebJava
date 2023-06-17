@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title th:text="${pageTitle}"></title>
+  <th:block th:replace="~{admin/layouts/_header::link-css}"></th:block>
+</head>
+<body>
+<div th:replace="~{admin/layouts/_header :: header}"></div>
+<div class="content-wrapper">
+  <section class="content-header">
+    <div class="container-fluid">
+      <div class="row mb-2">
+        <div class="col-sm-6">
+          <h1>Quản lý Cấu hình hệ thống</h1>
+        </div>
+        <div class="col-sm-6">
+          <ol class="breadcrumb float-sm-right">
+            <li class="breadcrumb-item"><a href="/admin/home">Home</a></li>
+            <li class="breadcrumb-item active" th:text="${pageTitle}"></li>
+          </ol>
+        </div>
+      </div>
+    </div><!-- /.container-fluid -->
+  </section>
+
+  <section class="content">
+    <div class="card">
+      <div class="card-header">
+        <h3 class="card-title" th:text="${pageTitle}"></h3>
+      </div>
+      <div class="card-body">
+        <div id="load_page"></div>
+        <div th:replace="~{admin/settingSystem/_partialSetting :: partialSetting}"></div>
+      </div>
+      <div class="card-footer">
+
+      </div>
+    </div>
+  </section>
+</div>
+<div th:replace="~{admin/layouts/_footer :: footer}"></div>
+</body>
+</html>

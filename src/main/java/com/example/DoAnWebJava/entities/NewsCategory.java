@@ -6,6 +6,7 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import lombok.*;
 
+import java.util.HashSet;
 import java.util.Set;
 
 @Getter
@@ -25,11 +26,9 @@ public class NewsCategory extends CommonAbstract {
     @NotBlank(message = "Bạn không được để trống tiêu đề tin")
     @Size(max = 150)
     private String title;
-
     @Column
     private boolean isActivate;
-
-    @OneToMany(mappedBy = "newsCategory")
-    private Set<News> news;
+    @OneToMany(mappedBy = "newsCategory", cascade = CascadeType.ALL)
+    private Set<News> news = new HashSet<>();
 
 }

@@ -25,10 +25,6 @@ public class OrderService {
         return convertToDtoList(orders);
     }
 
-    public List<OrderDto> getOrderDtosByIsActive(boolean isActive) {
-        List<Order> orders = orderRepository.findByIsActivate(isActive);
-        return convertToDtoList(orders);
-    }
 
     public OrderDto getOrderDtoById(int id) {
         Optional<Order> orderOptional = orderRepository.findById(id);

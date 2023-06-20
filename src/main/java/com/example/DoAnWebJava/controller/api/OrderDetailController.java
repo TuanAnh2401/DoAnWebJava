@@ -2,6 +2,7 @@ package com.example.DoAnWebJava.controller.api;
 
 import com.example.DoAnWebJava.entities.OrderDetail;
 import com.example.DoAnWebJava.repositories.UserRegistrationException;
+import com.example.DoAnWebJava.service.AdvService;
 import com.example.DoAnWebJava.service.OrderDetailService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -12,21 +13,17 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/order-detail")
 public class OrderDetailController {
-    private final OrderDetailService orderDetailService;
+
     @Autowired
-    public OrderDetailController(OrderDetailService orderDetailService) {
-        this.orderDetailService = orderDetailService;
-    }
+    private OrderDetailService orderDetailService;
+
+
     @GetMapping("/getAll")
     public ResponseEntity<List<OrderDetail>> getAllOrderDetails() {
         List<OrderDetail> allOrderDetails = orderDetailService.getAllOrderDetails();
         return ResponseEntity.ok(allOrderDetails);
     }
-    @GetMapping("/getByActivate/{isActivate}")
-    public ResponseEntity<List<OrderDetail>> getOrderDetailsByActivate(@PathVariable boolean isActivate) {
-        List<OrderDetail> activeOrderDetails = orderDetailService.getOrderDetailsByActivate(isActivate);
-        return ResponseEntity.ok(activeOrderDetails);
-    }
+
     @PostMapping("/add")
     public ResponseEntity<String> addOrderDetail(@RequestBody OrderDetail orderDetail) {
         if (orderDetail != null) {

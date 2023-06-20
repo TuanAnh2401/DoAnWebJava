@@ -23,11 +23,7 @@ public class OrderController {
         return ResponseEntity.ok(allOrders);
     }
 
-    @GetMapping("/getActive/{isActive}")
-    public ResponseEntity<List<OrderDto>> getActiveOrders(@PathVariable boolean isActive) {
-        List<OrderDto> orders = orderService.getOrderDtosByIsActive(isActive);
-        return ResponseEntity.ok(orders);
-    }
+
     @GetMapping("/{id}")
     public ResponseEntity<OrderDto> getOrderById(@PathVariable int id) {
         OrderDto order = orderService.getOrderDtoById(id);

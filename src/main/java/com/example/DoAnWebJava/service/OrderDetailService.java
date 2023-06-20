@@ -3,10 +3,11 @@ package com.example.DoAnWebJava.service;
 import com.example.DoAnWebJava.entities.OrderDetail;
 import com.example.DoAnWebJava.repositories.OrderDetailRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import java.util.Date;
 import java.util.List;
-
+@Service
 public class OrderDetailService {
     private final OrderDetailRepository orderDetailRepository;
 
@@ -19,9 +20,7 @@ public class OrderDetailService {
         return orderDetailRepository.findAll();
     }
 
-    public List<OrderDetail> getOrderDetailsByActivate(boolean isActivate) {
-        return orderDetailRepository.findByIsActivate(isActivate);
-    }
+
 
     public OrderDetail addOrderDetail(OrderDetail orderDetail) {
         orderDetail.setCreatedDate(new Date());

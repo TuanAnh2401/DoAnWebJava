@@ -1,6 +1,5 @@
 package com.example.DoAnWebJava.dto;
 
-import com.example.DoAnWebJava.support.CommonAbstract;
 import com.example.DoAnWebJava.support.CommonAbstractDto;
 import lombok.AllArgsConstructor;
 import lombok.Getter;

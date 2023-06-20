@@ -1,7 +1,6 @@
 package com.example.DoAnWebJava.controller.api;
 
 import com.example.DoAnWebJava.dto.OrderDto;
-import com.example.DoAnWebJava.dto.ProductDto;
 import com.example.DoAnWebJava.service.OrderService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;

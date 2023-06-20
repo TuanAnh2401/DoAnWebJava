@@ -1,7 +1,6 @@
 package com.example.DoAnWebJava.repositories;
 
 import com.example.DoAnWebJava.entities.Order;
-import com.example.DoAnWebJava.entities.Product;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;

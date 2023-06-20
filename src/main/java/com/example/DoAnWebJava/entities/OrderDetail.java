@@ -1,9 +1,11 @@
 package com.example.DoAnWebJava.entities;
 
+import com.example.DoAnWebJava.support.CommonAbstract;
 import jakarta.persistence.*;
 import lombok.*;
 
 import java.math.BigDecimal;
+import java.util.Date;
 
 @Getter
 @Setter
@@ -13,7 +15,7 @@ import java.math.BigDecimal;
 @Table(name = "tb_OrderDetail")
 @RequiredArgsConstructor
 @AllArgsConstructor
-public class OrderDetail {
+public class OrderDetail extends CommonAbstract{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
@@ -28,6 +30,5 @@ public class OrderDetail {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "productId", referencedColumnName = "id")
     private Product product;
-
 }
 

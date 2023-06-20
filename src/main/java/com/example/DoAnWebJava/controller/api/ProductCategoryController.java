@@ -1,7 +1,4 @@
 package com.example.DoAnWebJava.controller.api;
-
-import com.example.DoAnWebJava.entities.Adv;
-import com.example.DoAnWebJava.entities.Contact;
 import com.example.DoAnWebJava.entities.ProductCategory;
 import com.example.DoAnWebJava.repositories.UserRegistrationException;
 import com.example.DoAnWebJava.service.ProductCategoryService;
@@ -14,7 +11,6 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/product-categories")
 public class ProductCategoryController {
-
     private final ProductCategoryService productCategoryService;
 
     @Autowired
@@ -50,8 +46,8 @@ public class ProductCategoryController {
     @PostMapping("/add")
     public ResponseEntity<String> addProductCategory(@RequestBody ProductCategory productCategory) {
         if (productCategory != null) {
-            ProductCategory addedProductCategory = productCategoryService.addProductCategory(productCategory);
-            return ResponseEntity.ok("Product Category added successfully with ID: " + addedProductCategory.getId());
+            ProductCategory addProductCategory = productCategoryService.addProductCategory(productCategory);
+            return ResponseEntity.ok("Product Category added successfully with ID: " + addProductCategory.getId());
         }
         return ResponseEntity.badRequest().body("Invalid request body");
     }
@@ -60,7 +56,7 @@ public class ProductCategoryController {
     public ResponseEntity<String> updateProductCategory(@PathVariable int id, @RequestBody ProductCategory productCategory) throws UserRegistrationException {
         if (productCategory != null) {
             try {
-                ProductCategory updatedProductCategory = productCategoryService.updateProductCategory(id, productCategory);
+                ProductCategory updateProductCategory = productCategoryService.updateProductCategory(id, productCategory);
                 return ResponseEntity.ok("Product Category updated successfully");
             } catch (UserRegistrationException e) {
                 return ResponseEntity.badRequest().body(e.getMessage());

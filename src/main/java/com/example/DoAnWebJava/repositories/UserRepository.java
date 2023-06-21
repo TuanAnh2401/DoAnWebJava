@@ -7,6 +7,8 @@ import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+
 @Repository
 public interface UserRepository extends JpaRepository<User, Long> {
     boolean existsByUsername(String username);
@@ -19,5 +21,8 @@ public interface UserRepository extends JpaRepository<User, Long> {
     @Transactional
     @Query(value = "INSERT INTO tb_user_role (user_id, role_id) VALUES (?1, ?2)", nativeQuery = true)
     void addRoleToUser(Long userId, Long roleId);
+
+    int countByUsernameContainingIgnoreCase(String searchString);
+
 }
 

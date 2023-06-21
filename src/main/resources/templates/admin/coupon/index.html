@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title th:text="${pageTitle}"></title>
+    <th:block th:replace="~{admin/layouts/_header::link-css}"></th:block>
+</head>
+<body>
+<div th:replace="~{admin/layouts/_header :: header}"></div>
+<div class="content-wrapper">
+    <div class="container">
+        <h1 th:text="${pageTitle}"></h1>
+
+        <form id="searchForm" method="get">
+            <div class="form-group">
+                <input type="text" class="form-control" name="searchString" placeholder="Tìm kiếm sản phẩm">
+            </div>
+            <button type="submit" class="btn btn-primary">Tìm kiếm</button>
+        </form>
+        <div class="card-tools">
+            <a href="#" class="btn btn-danger" id="BtnDeleteAll">Xóa</a>
+        </div>
+        <div class="card-tools">
+            <a href="/admin/coupon/add" class="btn btn-primary">Thêm mới</a>
+        </div>
+        <table id="couponsTable" class="table table-hover">
+            <thead>
+            <tr>
+                <th><input type="checkbox" id="SelectAll"></th>
+                <th>STT</th>
+                <th>Mã</th>
+                <th>Giảm giá</th>
+                <th>Trạng thái</th>
+                <th>Ngày tạo</th>
+                <th>Ngày sửa</th>
+                <th>Hành động</th>
+            </tr>
+            </thead>
+            <tbody></tbody>
+        </table>
+
+        <div class="row">
+            <div class="col-12">
+                <ul id="pagination" class="pagination"></ul>
+            </div>
+        </div>
+    </div>
+</div>
+<div th:replace="~{admin/layouts/_footer :: footer}"></div>
+<script>
+    $(document).ready(function () {
+        var currentPage = 1;
+
+        function loadContacts(pageNumber = 1, searchString = "") {
+            $.ajax({
+                url: 'http://localhost:2009/api/coupons/paginate',
+                type: 'GET',
+                data: {
+                    page: pageNumber,
+                    searchString: searchString
+                },
+                success: function (response) {
+                    var coupons = response.data;
+                    var totalPages = response.totalPages;
+                    var tableBody = $('#couponsTable tbody');
+                    tableBody.empty();
+
+                    if (coupons.length > 0) {
+                        var i = ((pageNumber - 1) * 10) + 1;
+                        coupons.forEach(function (coupon) {
+                            var row = $('<tr>').attr('id', 'trow_' + coupon.id);
+                            row.append('<td><input type="checkbox" class="cbkItem" value="' + coupon.id + '" /></td>');
+                            row.append('<td>' + i + '</td>');
+                            row.append('<td>' + coupon.code + '</td>');
+                            row.append('<td>' + coupon.discount + '</td>');
+                            row.append('<td>' + (coupon.isActivate ? 'Active' : 'Inactive') + '</td>');
+                            row.append('<td>' + formatDate(coupon.createdDate) + '</td>');
+                            row.append('<td>' + formatDate(coupon.modifiedDate) + '</td>');
+                            row.append('<td>' +
+                                '<a style="margin-right:5px;" href="/admin/coupon/edit/' + coupon.id + '" class="btn btn-sm btn-primary">Sửa</a>' +
+                                '<a href="#" data-id="' + coupon.id + '" class="btn btn-sm btn-danger btnDelete">Xóa</a>' +
+                                '</td>');
+
+                            tableBody.append(row);
+                            i++;
+                        });
+                    } else {
+                        var row = $('<tr>').append('<td colspan="8">Không có dữ liệu liên hệ!!!</td>');
+                        tableBody.append(row);
+                    }
+                    updatePagination(totalPages, pageNumber, searchString);
+                },
+                error: function (xhr, status, error) {
+                    console.log(error);
+                }
+            });
+        }
+
+        function updatePagination(totalPages, currentPage, searchString) {
+            var pagination = $('#pagination');
+            pagination.empty();
+
+            for (var i = 1; i <= totalPages; i++) {
+                var pageLink = $('<li class="page-item">');
+                if (i === currentPage) {
+                    pageLink.addClass('active');
+                }
+                pageLink.append('<a class="page-link" href="#">' + i + '</a>');
+                pagination.append(pageLink);
+            }
+
+            // Lắng nghe sự kiện click trên các liên kết phân trang
+            pagination.find('.page-link').click(function (e) {
+                e.preventDefault();
+                var pageNumber = parseInt($(this).text());
+                loadContacts(pageNumber, searchString);
+            });
+        }
+
+        function formatDate(dateString) {
+            var date = new Date(dateString);
+            var day = date.getDate();
+            var month = date.getMonth() + 1;
+            var year = date.getFullYear();
+
+            // Đảm bảo định dạng ngày và tháng có hai chữ số
+            if (day < 10) {
+                day = '0' + day;
+            }
+            if (month < 10) {
+                month = '0' + month;
+            }
+
+            return day + '/' + month + '/' + year;
+        }
+
+        $('#searchForm').submit(function (e) {
+            e.preventDefault();
+            var searchString = $('input[name="searchString"]').val();
+            loadContacts(1, searchString);
+        });
+
+        loadContacts(currentPage);
+    });
+
+    $(document).ready(function () {
+        $('body').on('click', '#BtnDeleteAll', function (e) {
+            e.preventDefault();
+            var str = "";
+            var checkbox = $('#couponsTable').find('tbody tr td input:checkbox');
+            var i = 0;
+            checkbox.each(function () {
+                if (this.checked) {
+                    var _id = $(this).val();
+                    if (i === 0) {
+                        str += _id;
+                    } else {
+                        str += "," + _id;
+                    }
+                    i++;
+                } else {
+                    checkbox.attr('selected', '');
+                }
+            });
+            if (str.length > 0) {
+                var conf = confirm('Bạn có muốn xóa các bản ghi này hay không?');
+                if (conf === true) {
+                    $.ajax({
+                        url: 'http://localhost:2009/api/coupon/deleteAll',
+                        type: 'POST',
+                        data: { ids: str },
+                        success: function () {
+                            location.reload();
+                        }
+                    });
+                }
+            }
+        });
+
+        $('body').on('change', '#SelectAll', function () {
+            var checkStatus = this.checked;
+            var checkbox = $('#couponsTable').find('tbody tr td input:checkbox');
+            checkbox.each(function () {
+                this.checked = checkStatus;
+                if (this.checked) {
+                    checkbox.attr('selected', 'checked');
+                } else {
+                    checkbox.attr('selected', '');
+                }
+            });
+        });
+
+        $('body').on('click', '.btnDelete', function () {
+            var id = $(this).data("id");
+            var conf = confirm('Bạn có muốn xóa bản ghi này không?');
+            if (conf === true) {
+                $.ajax({
+                    url: 'http://localhost:2009/api/coupons/delete/' + id,
+                    type: 'PUT',
+                    success: function () {
+                        // Xóa hàng trong bảng
+                        $('#trow_' + id).remove();
+                    },
+                });
+            }
+        });
+    });
+</script>
+</body>
+</html>

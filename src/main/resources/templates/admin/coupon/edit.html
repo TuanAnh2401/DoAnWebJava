@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title th:text="${pageTitle}"></title>
+  <th:block th:replace="~{admin/layouts/_header::link-css}"></th:block>
+</head>
+<body>
+<div th:replace="~{admin/layouts/_header :: header}"></div>
+<div class="content-wrapper">
+  <input type="hidden" name="id" th:value="${id}"></input>
+  <div class="row">
+    <div class="col-12">
+      <div class="card">
+        <div class="card-body">
+          <div class="tab-content">
+            <div class="active tab-pane" id="activity">
+              <div class="form-group">
+                <label>Mã code</label>
+                <input type="text" name="code"  id="code"class="form-control" />
+              </div>
+              <div class="form-group">
+                <label>Khuyến mãi (%)</label>
+                <div class="input-group">
+                  <div class="custom-file">
+                    <input type="text" id="discount" name="discount" class="form-control" />
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="col-12">
+      <div>
+        <button type="button" class="btn btn-success" onclick="updateSetting()">Lưu</button>
+        <a href="/admin/coupon" class="btn btn-danger">Quay lại</a>
+      </div>
+    </div>
+  </div>
+</div>
+<div th:replace="~{admin/layouts/_footer :: footer}"></div>
+<script>
+    $(document).ready(function () {
+        var id = $("input[name='id']").val();
+        // Gọi API để lấy dữ liệu từ server
+        $.get("http://localhost:2009/api/coupons/" + id, function (data) {
+            // Cập nhật giá trị trong view
+            $("#code").val(data.code);
+            $("#discount").val(data.discount);
+        });
+    });
+
+    function updateSetting() {
+        var id = $("input[name='id']").val();
+        // Lấy giá trị từ form
+        var settingData = {
+            code: $("input[name='code']").val(),
+            discount: $("input[name='discount']").val(),
+        };
+
+        // Gọi API để lưu giá trị vào cơ sở dữ liệu
+        $.ajax({
+            url: "http://localhost:2009/api/coupons/edit/"+id,
+            type: "PUT",
+            contentType: "application/json",
+            data: JSON.stringify(settingData),
+            success: function () {
+                // Xử lý thành công
+                alert("Lưu thành công!");
+                window.location.href = "/admin/coupon"; // Chuyển hướng về "/admin/"
+            },
+            error: function () {
+                // Xử lý lỗi
+                alert("Lỗi khi lưu cấu hình!");
+            }
+        });
+    }
+</script>
+</body>
+</html>

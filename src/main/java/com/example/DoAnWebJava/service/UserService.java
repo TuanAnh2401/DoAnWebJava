@@ -15,7 +15,13 @@ import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.mail.javamail.MimeMessageHelper;
+
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
 import java.util.UUID;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.Context;
@@ -196,6 +202,38 @@ public class UserService {
         } else {
             throw new UserRegistrationException("User not found with username: " + username);
         }
+    }
+
+    public int getTotalUsers(String searchString) {
+        return userRepository.countByUsernameContainingIgnoreCase(searchString);
+    }
+
+    public List<User> getPaginatedContacts(int page, int pageSize, String searchString) {
+        int startIndex = (page - 1) * pageSize;
+        int endIndex = startIndex + pageSize;
+
+        // Lấy danh sách tất cả liên hệ từ nguồn dữ liệu (database, API, v.v.)
+        List<User> allUsers = userRepository.findAll();
+
+        // Lọc danh sách liên hệ dựa trên điều kiện tìm kiếm (nếu có)
+        List<User> filteredUsers = filterUsers(allUsers, searchString);
+
+        // Kiểm tra và trả về danh sách liên hệ phân trang
+        if (startIndex >= filteredUsers.size()) {
+            return Collections.emptyList(); // Không có liên hệ nào để hiển thị
+        } else {
+            return filteredUsers.subList(startIndex, Math.min(endIndex, filteredUsers.size()));
+        }
+    }
+
+    private List<User> filterUsers(List<User> users, String searchString) {
+        return users.stream()
+                .filter(user -> isContactMatchSearchCriteria(user, searchString))
+                .collect(Collectors.toList());
+    }
+    private boolean isContactMatchSearchCriteria(User user, String searchString) {
+        String name = user.getName();
+        return name.contains(searchString);
     }
 
 }

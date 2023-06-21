@@ -55,7 +55,6 @@
 <div th:replace="~{admin/layouts/_footer :: footer}"></div>
 <script>
     function saveSetting() {
-         e.preventDefault();
         // Lấy giá trị từ form
         var settingData = {
             title: $("input[name='title']").val(),
@@ -70,14 +69,13 @@
             type: "POST",
             contentType: "application/json",
             data: JSON.stringify(settingData),
-            success: function (response) {
+            success: function () {
                 // Xử lý thành công
-                console.log(response);
                 alert("Lưu thành công!");
             },
-            error: function (error) {
+            error: function () {
                 // Xử lý lỗi
-                console.log(error);
+
                 alert("Lỗi khi lưu cấu hình!");
             }
         });

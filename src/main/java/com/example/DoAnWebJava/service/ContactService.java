@@ -53,21 +53,14 @@ public class ContactService {
     }
 
     private boolean isContactMatchSearchCriteria(Contact contact, String searchString) {
-        // Kiểm tra xem tên khách hàng hoặc email có chứa chuỗi tìm kiếm hay không
+
         String name = contact.getName();
         String email = contact.getEmail();
+        boolean isActivate = contact.isActivate();
 
-        return name.contains(searchString) || email.contains(searchString);
+        return name.contains(searchString) || email.contains(searchString) && isActivate;
     }
 
-
-    public List<Contact> getAllContacts() {
-        return contactRepository.findAll();
-    }
-
-    public List<Contact> getContactsByActivate(boolean isActivate) {
-        return contactRepository.findByIsActivate(isActivate);
-    }
 
     public Contact getContactById(int id) {
         Optional<Contact> optionalContact = contactRepository.findById(id);

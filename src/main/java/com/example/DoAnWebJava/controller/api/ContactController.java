@@ -19,10 +19,6 @@ public class ContactController {
     @Autowired
     private ContactService contactService;
 
-    @GetMapping
-    public List<Contact> getAllContacts() {
-        return contactService.getAllContacts();
-    }
 
     @GetMapping("/paginate")
     public ResponseEntity<ResponsePaging<List<Contact>>> getPaginatedContacts(
@@ -45,11 +41,6 @@ public class ContactController {
         return ResponseEntity.ok(responsePaging);
     }
 
-    @GetMapping("/getByActivate/{isActivate}")
-    public ResponseEntity<List<Contact>> getContactsByActivate(@PathVariable boolean isActivate) {
-        List<Contact> contacts = contactService.getContactsByActivate(isActivate);
-        return ResponseEntity.ok(contacts);
-    }
 
     @GetMapping("/{id}")
     public ResponseEntity<Contact> getContactById(@PathVariable int id) {

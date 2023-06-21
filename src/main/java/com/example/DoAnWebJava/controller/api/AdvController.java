@@ -50,7 +50,7 @@ public class AdvController {
         }
     }
 
-    @PostMapping("/edit/{id}")
+    @PutMapping("/edit/{id}")
     public ResponseEntity<String> updateAdv(@PathVariable int id, @RequestBody Adv model) {
         if (model != null) {
             try {
@@ -63,23 +63,23 @@ public class AdvController {
         return ResponseEntity.badRequest().body("Invalid request body");
     }
 
-    @PostMapping("/delete/{id}")
+    @DeleteMapping("/delete/{id}")
     public ResponseEntity<String> deleteAdv(@PathVariable int id) {
         try {
             advService.deleteAdv(id);
-            return ResponseEntity.ok("Adv deleted successfully");
+            return ResponseEntity.noContent().build();
         } catch (UserRegistrationException e) {
             return ResponseEntity.notFound().build();
         }
     }
 
-    @PostMapping("/deleteAll")
+    @DeleteMapping("/deleteAll")
     public ResponseEntity<String> deleteAllAdvs(@RequestParam("ids") List<Integer> ids) {
         try {
             advService.deleteAllAdvs(ids);
-            return ResponseEntity.ok("All Advs deleted successfully");
+            return ResponseEntity.noContent().build();
         } catch (UserRegistrationException e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
+            return ResponseEntity.notFound().build();
         }
     }
 }

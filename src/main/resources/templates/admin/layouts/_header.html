@@ -28,6 +28,7 @@
   <!-- Theme style -->
   <link th:fragment="link-css" rel="stylesheet" th:href="@{/content/clients/dist/css/adminlte.min.css}">
   <link th:fragment="link-css" rel="stylesheet" th:href="@{/content/PagedList.css}">
+  <script th:fragment="link-css" th:src="@{/scripts/jquery-3.6.0.min.js}"></script>
 </head>
 <body class="hold-transition sidebar-mini">
 <header th:fragment="header">
@@ -64,6 +65,5 @@
   <!-- /.content-wrapper -->
 </header>
 <div th:fragment="content"></div>
-<div th:replace="~{admin/layouts/_footer :: footer}"></div>
 </body>
 </html>

@@ -1,15 +1,15 @@
 <body th:fragment="partialSetting" xmlns:th="http://www.thymeleaf.org">
 <script th:inline="javascript">
-        function OnBegin() {
-            $('#load_page').html('Đang lưu...');
-        }
-        function OnSuccess(rs) {
-            $('#load_page').html('');
-        }
-        function OnFailure(rs) {
+    function OnBegin() {
+        $('#load_page').html('Đang lưu...');
+    }
+    function OnSuccess(rs) {
+        $('#load_page').html('');
+    }
+    function OnFailure(rs) {
 
-        }
-    </script>
+    }
+</script>
 
 <form th:action="@{/admin/settingSystem/add}" method="post" th:onsubmit="'return false;'" th:fragment="form">
   <div class="row">
@@ -29,7 +29,7 @@
                     <input type="text" id="settingLogo" name="settingLogo" class="form-control" />
                   </div>
                   <div class="input-group-append">
-                    <input type="button" value="Tải ảnh" onclick="BrowseServer('settingLogo');" />
+                    <input type="button" value="Tải ảnh" id="ckfinder-popup-1" />
                   </div>
                 </div>
               </div>
@@ -58,7 +58,6 @@
   </div>
 </form>
 <div id="load_page"></div>
-<script th:src="@{/scripts/jquery-3.6.0.min.js}"></script>
 <script>
     $(document).ready(function () {
         // Gọi API để lấy giá trị từ server
@@ -71,24 +70,31 @@
             $("input[name='settingAddress']").val(data.settingAddress);
         });
     });
+		var button1 = document.getElementById( 'ckfinder-popup-1' );
 
-    function BrowseServer(field) {
-    CKFinder.popup({
-        chooseFiles: true,
-        onInit: function(finder) {
-            finder.on('files:choose', function(evt) {
-                var file = evt.data.files.first();
-                document.getElementById(field).value = file.getUrl();
-            });
+      button1.onclick = function() {
+          selectFileWithCKFinder( 'settingLogo' );
+      };
 
-            finder.on('file:choose:resizedImage', function(evt) {
-                var url = evt.data.resizedUrl;
-                document.getElementById(field).value = url;
-            });
-        }
-    });
-}
+      function selectFileWithCKFinder( elementId ) {
+          CKFinder.popup( {
+              chooseFiles: true,
+              width: 800,
+              height: 600,
+              onInit: function( finder ) {
+                  finder.on( 'files:choose', function( evt ) {
+                      var file = evt.data.files.first();
+                      var output = document.getElementById( elementId );
+                      output.value = file.getUrl();
+                  } );
 
+                  finder.on( 'file:choose:resizedImage', function( evt ) {
+                      var output = document.getElementById( elementId );
+                      output.value = evt.data.resizedUrl;
+                  } );
+              }
+          } );
+      }
     function saveSetting() {
         // Lấy giá trị từ form
         var settingData = {

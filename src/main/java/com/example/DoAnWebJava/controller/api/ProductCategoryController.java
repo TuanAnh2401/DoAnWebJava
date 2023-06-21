@@ -1,7 +1,5 @@
 package com.example.DoAnWebJava.controller.api;
 
-import com.example.DoAnWebJava.entities.Adv;
-import com.example.DoAnWebJava.entities.Contact;
 import com.example.DoAnWebJava.entities.ProductCategory;
 import com.example.DoAnWebJava.repositories.UserRegistrationException;
 import com.example.DoAnWebJava.service.ProductCategoryService;

@@ -69,8 +69,8 @@ public class ProductController {
     @PostMapping("/add")
     public ResponseEntity<String> addProduct(@RequestBody ProductDto productDto) {
         if (productDto != null) {
-            ProductDto addedProduct = productService.addProduct(productDto);
-            return ResponseEntity.ok("Product added successfully with ID: " + addedProduct.getId());
+            ProductDto addProduct = productService.addProduct(productDto);
+            return ResponseEntity.ok("Product added successfully with ID: " + addProduct.getId());
         }
         return ResponseEntity.badRequest().body("Invalid request body");
     }

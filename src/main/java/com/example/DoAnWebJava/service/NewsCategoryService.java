@@ -1,14 +1,14 @@
 package com.example.DoAnWebJava.service;
 
+import com.example.DoAnWebJava.dto.NewsCategoryDto;
 import com.example.DoAnWebJava.entities.NewsCategory;
 import com.example.DoAnWebJava.repositories.NewsCategoryRepository;
-import com.example.DoAnWebJava.repositories.UserRegistrationException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.Date;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class NewsCategoryService {
@@ -20,42 +20,65 @@ public class NewsCategoryService {
         this.newsCategoryRepository = newsCategoryRepository;
     }
 
-    public List<NewsCategory> getAllNewsCategories() {
-        return newsCategoryRepository.findAll();
+    public List<NewsCategoryDto> getAllNewsCategoryDtos() {
+        List<NewsCategory> newsCategories = newsCategoryRepository.findAll();
+        return newsCategories.stream()
+                .map(this::convertToDto)
+                .collect(Collectors.toList());
     }
 
-    public List<NewsCategory> getNewsCategoriesByActivate(boolean isActivate) {
-        return newsCategoryRepository.findByIsActivate(isActivate);
+    public List<NewsCategoryDto> getNewsCategoryDtosByActivate(boolean isActivate) {
+        List<NewsCategory> activeNewsCategories = newsCategoryRepository.findByIsActivate(isActivate);
+        return activeNewsCategories.stream()
+                .map(this::convertToDto)
+                .collect(Collectors.toList());
     }
 
-    public NewsCategory getNewsCategoryById(int id) {
-        return newsCategoryRepository.findById(id).orElse(null);
+    public NewsCategoryDto getNewsCategoryDtoById(int id) {
+        Optional<NewsCategory> newsCategoryOptional = newsCategoryRepository.findById(id);
+        return newsCategoryOptional.map(this::convertToDto).orElse(null);
     }
 
-    public NewsCategory addNewsCategory(NewsCategory newsCategory) {
-        newsCategory.setCreatedDate(new Date());
-        newsCategory.setModifiedDate(new Date());
-        return newsCategoryRepository.save(newsCategory);
+    public NewsCategoryDto addNewsCategory(NewsCategoryDto newsCategoryDto) {
+        NewsCategory newsCategory = convertToEntity(newsCategoryDto);
+        NewsCategory savedNewsCategory = newsCategoryRepository.save(newsCategory);
+        return convertToDto(savedNewsCategory);
     }
 
-    public NewsCategory updateNewsCategory(int id, NewsCategory updatedNewsCategory) throws UserRegistrationException {
-        NewsCategory existingNewsCategory = newsCategoryRepository.findById(id).orElse(null);
-        if (existingNewsCategory != null) {
-            existingNewsCategory.setTitle(updatedNewsCategory.getTitle());
-            existingNewsCategory.setActivate(updatedNewsCategory.isActivate());
-            existingNewsCategory.setModifiedDate(new Date());
-            // Update other properties of NewsCategory as needed
-            return newsCategoryRepository.save(existingNewsCategory);
+    public NewsCategoryDto updateNewsCategory(int id, NewsCategoryDto newsCategoryDto) {
+        Optional<NewsCategory> newsCategoryOptional = newsCategoryRepository.findById(id);
+        if (newsCategoryOptional.isPresent()) {
+            NewsCategory newsCategory = newsCategoryOptional.get();
+            newsCategory.setTitle(newsCategoryDto.getTitle());
+            newsCategory.setActivate(newsCategoryDto.isActivate());
+            NewsCategory updatedNewsCategory = newsCategoryRepository.save(newsCategory);
+            return convertToDto(updatedNewsCategory);
         }
-        throw new UserRegistrationException("News Category not found");
+        return null;
     }
 
-    public void deleteNewsCategory(int id) throws UserRegistrationException {
-        NewsCategory existingNewsCategory = newsCategoryRepository.findById(id).orElse(null);
-        if (existingNewsCategory != null) {
-            newsCategoryRepository.delete(existingNewsCategory);
-        } else {
-            throw new UserRegistrationException("News Category not found");
+    public boolean deleteNewsCategory(int id) {
+        Optional<NewsCategory> newsCategoryOptional = newsCategoryRepository.findById(id);
+        if (newsCategoryOptional.isPresent()) {
+            newsCategoryRepository.deleteById(id);
+            return true;
         }
+        return false;
+    }
+
+    private NewsCategoryDto convertToDto(NewsCategory newsCategory) {
+        NewsCategoryDto newsCategoryDto = new NewsCategoryDto();
+        newsCategoryDto.setId(newsCategory.getId());
+        newsCategoryDto.setTitle(newsCategory.getTitle());
+        newsCategoryDto.setActivate(newsCategory.isActivate());
+        return newsCategoryDto;
+    }
+
+    private NewsCategory convertToEntity(NewsCategoryDto newsCategoryDto) {
+        NewsCategory newsCategory = new NewsCategory();
+        newsCategory.setId(newsCategoryDto.getId());
+        newsCategory.setTitle(newsCategoryDto.getTitle());
+        newsCategory.setActivate(newsCategoryDto.isActivate());
+        return newsCategory;
     }
 }

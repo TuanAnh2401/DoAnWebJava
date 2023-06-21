@@ -1,9 +1,9 @@
 package com.example.DoAnWebJava.controller.api;
 
-import com.example.DoAnWebJava.entities.NewsCategory;
-import com.example.DoAnWebJava.repositories.UserRegistrationException;
+import com.example.DoAnWebJava.dto.NewsCategoryDto;
 import com.example.DoAnWebJava.service.NewsCategoryService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -21,52 +21,47 @@ public class NewsCategoryController {
     }
 
     @GetMapping("/getAll")
-    public ResponseEntity<List<NewsCategory>> getAllNewsCategories() {
-        List<NewsCategory> allNewsCategories = newsCategoryService.getAllNewsCategories();
-        return ResponseEntity.ok(allNewsCategories);
+    public ResponseEntity<List<NewsCategoryDto>> getAllNewsCategories() {
+        List<NewsCategoryDto> newsCategoryDtos = newsCategoryService.getAllNewsCategoryDtos();
+        return new ResponseEntity<>(newsCategoryDtos, HttpStatus.OK);
     }
 
     @GetMapping("/getByActivate/{isActivate}")
-    public ResponseEntity<List<NewsCategory>> getNewsCategoriesByActivate(@PathVariable boolean isActivate) {
-        List<NewsCategory> activeNewsCategories = newsCategoryService.getNewsCategoriesByActivate(isActivate);
-        return ResponseEntity.ok(activeNewsCategories);
+    public ResponseEntity<List<NewsCategoryDto>> getNewsCategoriesByActivate(@PathVariable boolean isActivate) {
+        List<NewsCategoryDto> activeNewsCategoryDtos = newsCategoryService.getNewsCategoryDtosByActivate(isActivate);
+        return new ResponseEntity<>(activeNewsCategoryDtos, HttpStatus.OK);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<NewsCategory> getNewsCategoryById(@PathVariable int id) {
-        NewsCategory newsCategory = newsCategoryService.getNewsCategoryById(id);
-        if (newsCategory != null) {
-            return ResponseEntity.ok(newsCategory);
-        } else {
-            return ResponseEntity.notFound().build();
+    public ResponseEntity<NewsCategoryDto> getNewsCategoryById(@PathVariable int id) {
+        NewsCategoryDto newsCategoryDto = newsCategoryService.getNewsCategoryDtoById(id);
+        if (newsCategoryDto != null) {
+            return new ResponseEntity<>(newsCategoryDto, HttpStatus.OK);
         }
+        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
 
     @PostMapping("/add")
-    public ResponseEntity<String> addNewsCategory(@RequestBody NewsCategory newsCategory) {
-        if (newsCategory != null) {
-            NewsCategory addedNewsCategory = newsCategoryService.addNewsCategory(newsCategory);
-            return ResponseEntity.ok("News Category added successfully with ID: " + addedNewsCategory.getId());
-        }
-        return ResponseEntity.badRequest().body("Invalid request body");
+    public ResponseEntity<NewsCategoryDto> addNewsCategory(@RequestBody NewsCategoryDto newsCategoryDto) {
+        NewsCategoryDto addedNewsCategory = newsCategoryService.addNewsCategory(newsCategoryDto);
+        return new ResponseEntity<>(addedNewsCategory, HttpStatus.CREATED);
     }
 
-    @PutMapping("/edit/{id}")
-    public ResponseEntity<String> updateNewsCategory(@PathVariable int id, @RequestBody NewsCategory newsCategory) throws UserRegistrationException {
-        if (newsCategory != null) {
-            NewsCategory updatedNewsCategory = newsCategoryService.updateNewsCategory(id, newsCategory);
-            return ResponseEntity.ok("News Category updated successfully");
+    @PutMapping("/update/{id}")
+    public ResponseEntity<NewsCategoryDto> updateNewsCategory(@PathVariable int id, @RequestBody NewsCategoryDto newsCategoryDto) {
+        NewsCategoryDto updatedNewsCategory = newsCategoryService.updateNewsCategory(id, newsCategoryDto);
+        if (updatedNewsCategory != null) {
+            return new ResponseEntity<>(updatedNewsCategory, HttpStatus.OK);
         }
-        return ResponseEntity.badRequest().body("Invalid request body");
+        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
 
     @DeleteMapping("/delete/{id}")
-    public ResponseEntity<String> deleteNewsCategory(@PathVariable int id) {
-        try {
-            newsCategoryService.deleteNewsCategory(id);
-            return ResponseEntity.ok("News Category deleted successfully");
-        } catch (UserRegistrationException e) {
-            return ResponseEntity.notFound().build();
+    public ResponseEntity<Void> deleteNewsCategory(@PathVariable int id) {
+        boolean deleted = newsCategoryService.deleteNewsCategory(id);
+        if (deleted) {
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         }
+        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
 }

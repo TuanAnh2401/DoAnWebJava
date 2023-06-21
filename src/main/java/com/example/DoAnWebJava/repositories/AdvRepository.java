@@ -10,5 +10,7 @@ import java.util.List;
 public interface AdvRepository extends JpaRepository<Adv, Integer> {
 
     int countByTitleContainingIgnoreCase(String searchString);
+    int countByTitleContainingIgnoreCaseAndIsActivate(String searchString, boolean isActivate);
+
     List<Adv> findByIsActivate(boolean isActivate);
 }

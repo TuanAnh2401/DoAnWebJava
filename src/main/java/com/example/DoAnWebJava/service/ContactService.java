@@ -20,33 +20,35 @@ public class ContactService {
     @Autowired
     private ContactRepository contactRepository;
 
-    public int getTotalContacts(String searchString) {
-        return contactRepository.countByNameContainingIgnoreCase(searchString);
+    public int getTotalContacts(String searchString, boolean isActivate) {
+        if (isActivate) {
+            return contactRepository.countByNameContainingIgnoreCaseAndIsActivate(searchString, true);
+        } else {
+            return contactRepository.countByNameContainingIgnoreCase(searchString);
+        }
     }
-
-    public List<Contact> getPaginatedContacts(int page, int pageSize, String searchString) {
+    public List<Contact> getPaginatedContacts(int page, int pageSize, String searchString, boolean isActivate) {
         // Tính toán vị trí bắt đầu và số lượng liên hệ cần lấy
         int startIndex = (page - 1) * pageSize;
         int endIndex = startIndex + pageSize;
 
         // Lấy danh sách tất cả liên hệ từ nguồn dữ liệu (database, API, v.v.)
-        List<Contact> allContacts = contactRepository.findAll();
+        List<Contact> allAdvs = contactRepository.findAll();
 
-        // Lọc danh sách liên hệ dựa trên điều kiện tìm kiếm (nếu có)
-        List<Contact> filteredContacts = filterContacts(allContacts, searchString);
+        // Lọc danh sách liên hệ dựa trên điều kiện tìm kiếm (nếu có) và trạng thái isActivate
+        List<Contact> filteredAdvs = filterContacts(allAdvs, searchString, isActivate);
 
         // Kiểm tra và trả về danh sách liên hệ phân trang
-        if (startIndex >= filteredContacts.size()) {
+        if (startIndex >= filteredAdvs.size()) {
             return Collections.emptyList(); // Không có liên hệ nào để hiển thị
         } else {
-            return filteredContacts.subList(startIndex, Math.min(endIndex, filteredContacts.size()));
+            return filteredAdvs.subList(startIndex, Math.min(endIndex, filteredAdvs.size()));
         }
     }
-
-    private List<Contact> filterContacts(List<Contact> contacts, String searchString) {
+    private List<Contact> filterContacts(List<Contact> contacts, String searchString, boolean isActivate) {
         return contacts.stream()
                 .filter(contact -> isContactMatchSearchCriteria(contact, searchString))
-                .filter(contact -> !contact.isActivate())
+                .filter(contact -> contact.isActivate() == isActivate)
                 .collect(Collectors.toList());
     }
 

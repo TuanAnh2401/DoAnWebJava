@@ -8,8 +8,13 @@ import java.util.List;
 
 @Repository
 public interface NewsRepository extends JpaRepository<News, Integer> {
-    List<News> findByIsActivate(boolean isActive);
-    List<News> findByIsHome(boolean isHome);
-    List<News> findByIsSale(boolean isSale);
-    List<News> findByIsHot(boolean isHot);
+    int countByTitleContainingIgnoreCaseAndIsActivate(String searchString, boolean isActivate);
+
+    int countByTitleContainingIgnoreCaseAndIsHome(String searchString, boolean isHome);
+
+    int countByTitleContainingIgnoreCaseAndIsSale(String searchString, boolean isSale);
+
+    int countByTitleContainingIgnoreCaseAndIsHot(String searchString, boolean isHot);
+
+    int countByTitleContainingIgnoreCase(String searchString);
 }

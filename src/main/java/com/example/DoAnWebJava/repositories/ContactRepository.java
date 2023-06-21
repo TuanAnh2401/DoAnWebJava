@@ -10,6 +10,7 @@ import java.util.List;
 @Repository
 public interface ContactRepository extends JpaRepository<Contact, Integer> {
     int countByNameContainingIgnoreCase(String searchString);
+    int countByNameContainingIgnoreCaseAndIsActivate(String searchString, boolean isActivate);
 
     List<Contact> findByIsActivate(boolean isActivate);
 }

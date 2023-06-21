@@ -56,7 +56,8 @@
                 type: 'GET',
                 data: {
                     page: pageNumber,
-                    searchString: searchString
+                    searchString: searchString,
+                    isActivate: false
                 },
                 success: function (response) {
                     var contacts = response.data;

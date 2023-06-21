@@ -1,7 +1,10 @@
 package com.example.DoAnWebJava.controller.api;
 
 import com.example.DoAnWebJava.dto.NewsDto;
+import com.example.DoAnWebJava.entities.Adv;
+import com.example.DoAnWebJava.entities.Contact;
 import com.example.DoAnWebJava.service.NewsService;
+import com.example.DoAnWebJava.support.ResponsePaging;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -19,33 +22,26 @@ public class NewsController {
         this.newsService = newsService;
     }
 
-    @GetMapping("/getAll")
-    public ResponseEntity<List<NewsDto>> getAllNews() {
-        List<NewsDto> allNews = newsService.getAllNewsDtos();
-        return ResponseEntity.ok(allNews);
-    }
-    @GetMapping("/getActive/{isActive}")
-    public ResponseEntity<List<NewsDto>> getActiveNews(@PathVariable boolean isActive) {
-        List<NewsDto> activeNews = newsService.getActiveNewsDtos(isActive);
-        return ResponseEntity.ok(activeNews);
-    }
+    @GetMapping("/paginate")
+    public ResponseEntity<ResponsePaging<List<NewsDto>>> getPaginatedContacts(
+            @RequestParam(defaultValue = "1") int page,
+            @RequestParam(defaultValue = "") String searchString,
+            @RequestParam(defaultValue = "true") boolean isActivate
+    ) {
+        int pageSize = 10; // Kích thước trang (số lượng liên hệ trên mỗi trang)
+        int totalContacts = newsService.getTotalNews(searchString, isActivate);
+        int totalPages = (int) Math.ceil((double) totalContacts / pageSize);
 
-    @GetMapping("/getHome/{isHome}")
-    public ResponseEntity<List<NewsDto>> getNewsByIsHome(@PathVariable boolean isHome) {
-        List<NewsDto> newsByIsHome = newsService.getNewsDtosByIsHome(isHome);
-        return ResponseEntity.ok(newsByIsHome);
-    }
+        // Giới hạn số trang hiện tại trong khoảng từ 1 đến tổng số trang
+        page = Math.max(1, Math.min(page, totalPages));
 
-    @GetMapping("/getSale/{isSale}")
-    public ResponseEntity<List<NewsDto>> getNewsByIsSale(@PathVariable boolean isSale) {
-        List<NewsDto> newsByIsSale = newsService.getNewsDtosByIsSale(isSale);
-        return ResponseEntity.ok(newsByIsSale);
-    }
+        // Lấy danh sách liên hệ phân trang từ Service
+        List<NewsDto> contacts = newsService.getPaginatedNews(page, pageSize, searchString, isActivate);
 
-    @GetMapping("/getHot/{isHot}")
-    public ResponseEntity<List<NewsDto>> getNewsByIsHot(@PathVariable boolean isHot) {
-        List<NewsDto> newsByIsHot = newsService.getNewsDtosByIsHot(isHot);
-        return ResponseEntity.ok(newsByIsHot);
+        // Tạo đối tượng ResponsePaging để chứa thông tin phân trang và danh sách liên hệ
+        ResponsePaging<List<NewsDto>> responsePaging = new ResponsePaging<>(contacts, totalPages, page, totalContacts);
+
+        return ResponseEntity.ok(responsePaging);
     }
     @GetMapping("/{id}")
     public ResponseEntity<NewsDto> getNewsById(@PathVariable int id) {

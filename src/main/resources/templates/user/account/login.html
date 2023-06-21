@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Sign Up Form by Colorlib</title>
+
+    <!-- Font Icon -->
+
+
+    <!-- Main css -->
+    <link rel="stylesheet" type="text/css" th:href="@{/Content/loginnew/login.css}">
+    <link th:fragment="link-css" rel="stylesheet" th:href="@{/content/PagedList.css}">
+</head>
+<body>
+
+<div class="main">
+
+    <section class="sign-in">
+        <div class="container">
+            <div class="signin-content">
+                <div class="signin-image">
+
+                    <figure><img th:src="@{/Content/loginnew/signup-image.jpg}" alt="sign up image" /></figure>
+                    <a href="/account/register" class="signup-image-link">Create an account</a>
+                </div>
+
+                <div class="signin-form">
+                    <h2 class="form-title">Sign up</h2>
+                    <form method="POST" class="register-form" id="login-form">
+                        <div class="form-group">
+                            <label for="your_name"><i class="zmdi zmdi-account material-icons-name"></i></label>
+                            <input type="text" name="Account" id="your_name" placeholder="Your Name"/>
+                        </div>
+                        <div class="form-group">
+                            <label for="your_pass"><i class="zmdi zmdi-lock"></i></label>
+                            <input type="password" name="Password" id="your_pass" placeholder="Password"/>
+                        </div>
+                        <a style="text-align: right;" href="/account/forgot-password" class="signup-image-link">Forgot password</a>
+                        <div class="form-group">
+                            <input type="checkbox" name="remember-me" id="remember-me" class="agree-term" />
+                            <label for="remember-me" class="label-agree-term"><span><span></span></span>Remember me</label>
+                        </div>
+                        <div class="form-group form-button">
+                            <button type="button" onclick="login()" class="login100-form-btn" style="font-family: Arial;">
+                                Đăng nhập
+                            </button>
+                        </div>
+                    </form>
+                    <div class="social-login">
+                        <span class="social-label">Or login with</span>
+                        <ul class="socials">
+                            <li><a href="#"><i class="display-flex-center zmdi zmdi-facebook"></i></a></li>
+                            <li><a href="#"><i class="display-flex-center zmdi zmdi-twitter"></i></a></li>
+                            <li><a href="#"><i class="display-flex-center zmdi zmdi-google"></i></a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+
+</div>
+
+<!-- JS -->
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    $(document).ready(function () {
+        const togglePassword = $('#togglePassword');
+        const password = $('#id_password');
+
+        togglePassword.on('click', function (e) {
+            // toggle the type attribute
+            const type = password.attr('type') === 'password' ? 'text' : 'password';
+            password.attr('type', type);
+            // toggle the eye slash icon
+            togglePassword.toggleClass('fa-eye fa-eye-slash');
+        });
+    });
+</script>
+<script>
+    function login() {
+        // Lấy giá trị từ form
+        var settingData = {
+            username: $("input[name='Account']").val(),
+            password: $("input[name='Password']").val(),
+        };
+
+        // Gọi API để lưu giá trị vào cơ sở dữ liệu
+        $.ajax({
+            url: "http://localhost:2009/api/users/login",
+            type: "POST",
+            contentType: "application/json",
+            data: JSON.stringify(settingData),
+            success: function (response) {
+                var accessToken = response.accessToken;
+                localStorage.setItem("accessToken", accessToken);
+                // Chuyển hướng đến trang sau khi đăng nhập thành công
+                alert("Đăng nhập thành công!");
+                window.location.href = "/";
+            },
+            error: function () {
+                // Xử lý lỗi
+                alert("Đăng nhập thất bại!");
+            }
+        });
+    }
+</script>
+
+<script th:src="@{/content/loginnew/jquery.min.js}"></script>
+<script th:src="@{/content/loginnew/main.js}"></script>
+
+</body>
+</html>

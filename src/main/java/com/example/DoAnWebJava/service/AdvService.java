@@ -20,11 +20,16 @@ public class AdvService {
     @Autowired
     private AdvRepository advRepository;
 
-    public int getTotalAdvs(String searchString) {
-        return advRepository.countByTitleContainingIgnoreCase(searchString);
+    public int getTotalAdvs(String searchString, boolean isActivate) {
+        if (isActivate) {
+            return advRepository.countByTitleContainingIgnoreCaseAndIsActivate(searchString, true);
+        } else {
+            return advRepository.countByTitleContainingIgnoreCase(searchString);
+        }
     }
 
-    public List<Adv> getPaginatedContacts(int page, int pageSize, String searchString) {
+
+    public List<Adv> getPaginatedContacts(int page, int pageSize, String searchString, boolean isActivate) {
         // Tính toán vị trí bắt đầu và số lượng liên hệ cần lấy
         int startIndex = (page - 1) * pageSize;
         int endIndex = startIndex + pageSize;
@@ -32,8 +37,8 @@ public class AdvService {
         // Lấy danh sách tất cả liên hệ từ nguồn dữ liệu (database, API, v.v.)
         List<Adv> allAdvs = advRepository.findAll();
 
-        // Lọc danh sách liên hệ dựa trên điều kiện tìm kiếm (nếu có)
-        List<Adv> filteredAdvs = filterAdvs(allAdvs, searchString);
+        // Lọc danh sách liên hệ dựa trên điều kiện tìm kiếm (nếu có) và trạng thái isActivate
+        List<Adv> filteredAdvs = filterAdvs(allAdvs, searchString, isActivate);
 
         // Kiểm tra và trả về danh sách liên hệ phân trang
         if (startIndex >= filteredAdvs.size()) {
@@ -43,12 +48,14 @@ public class AdvService {
         }
     }
 
-    private List<Adv> filterAdvs(List<Adv> advs, String searchString) {
+
+    private List<Adv> filterAdvs(List<Adv> advs, String searchString, boolean isActivate) {
         return advs.stream()
                 .filter(adv -> isContactMatchSearchCriteria(adv, searchString))
-                .filter(adv -> !adv.isActivate())
+                .filter(adv -> adv.isActivate() == isActivate)
                 .collect(Collectors.toList());
     }
+
 
     private boolean isContactMatchSearchCriteria(Adv adv, String searchString) {
 

@@ -1,16 +1,14 @@
 package com.example.DoAnWebJava.service;
 
-import com.example.DoAnWebJava.entities.Adv;
-import com.example.DoAnWebJava.entities.Contact;
+import com.example.DoAnWebJava.dto.ProductCategoryDto;
 import com.example.DoAnWebJava.entities.ProductCategory;
 import com.example.DoAnWebJava.repositories.ProductCategoryRepository;
-import com.example.DoAnWebJava.repositories.UserRegistrationException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.Date;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class ProductCategoryService {
@@ -22,46 +20,76 @@ public class ProductCategoryService {
         this.productCategoryRepository = productCategoryRepository;
     }
 
-    public List<ProductCategory> getAllProductCategories() {
-        return productCategoryRepository.findAll();
+    public List<ProductCategoryDto> getAllProductCategoryDtos() {
+        List<ProductCategory> productCategories = productCategoryRepository.findAll();
+        return convertToDtoList(productCategories);
     }
 
-
-    public List<ProductCategory> getProductCategoriesByActivate(boolean isActivate) {
-        return productCategoryRepository.findByIsActivate(isActivate);
+    public List<ProductCategoryDto> getProductCategoryDtosByActivate(boolean isActivate) {
+        List<ProductCategory> activeProductCategories = productCategoryRepository.findByIsActivate(isActivate);
+        return convertToDtoList(activeProductCategories);
     }
 
-
-    public ProductCategory getProductCategoryById(int id) {
-        return productCategoryRepository.findById(id).orElse(null);
+    public ProductCategoryDto getProductCategoryDtoById(int id) {
+        Optional<ProductCategory> productCategoryOptional = productCategoryRepository.findById(id);
+        return productCategoryOptional.map(this::convertToDto).orElse(null);
     }
 
-    public ProductCategory addProductCategory(ProductCategory productCategory) {
-        productCategory.setCreatedDate(new Date());
-        productCategory.setModifiedDate(new Date());
-        return productCategoryRepository.save(productCategory);
+    public ProductCategoryDto addProductCategory(ProductCategoryDto productCategoryDto) {
+        ProductCategory productCategory = convertToEntity(productCategoryDto);
+        ProductCategory savedProductCategory = productCategoryRepository.save(productCategory);
+        return convertToDto(savedProductCategory);
     }
 
-    public ProductCategory updateProductCategory(int id, ProductCategory updatedProductCategory) throws UserRegistrationException{
-        ProductCategory existingProductCategory = productCategoryRepository.findById(id).orElse(null);
-        if (existingProductCategory != null) {
-            existingProductCategory.setTitle(updatedProductCategory.getTitle());
-            existingProductCategory.setDescription(updatedProductCategory.getDescription());
-            existingProductCategory.setImage(updatedProductCategory.getImage());
-            existingProductCategory.setActivate(updatedProductCategory.isActivate());
-            existingProductCategory.setModifiedDate(new Date());
-            // Cập nhật các thuộc tính khác của ProductCategory
-            return productCategoryRepository.save(existingProductCategory);
+    public ProductCategoryDto updateProductCategory(int id, ProductCategoryDto productCategoryDto) {
+        Optional<ProductCategory> productCategoryOptional = productCategoryRepository.findById(id);
+        if (productCategoryOptional.isPresent()) {
+            ProductCategory productCategory = productCategoryOptional.get();
+            productCategory.setTitle(productCategoryDto.getTitle());
+            productCategory.setDescription(productCategoryDto.getDescription());
+            productCategory.setImage(productCategoryDto.getImage());
+            productCategory.setActivate(productCategoryDto.isActivate());
+            ProductCategory updatedProductCategory = productCategoryRepository.save(productCategory);
+            return convertToDto(updatedProductCategory);
         }
-        throw new UserRegistrationException("Product Category not found");
+        return null;
     }
 
-    public void deleteProductCategory(int id) throws UserRegistrationException{
-        ProductCategory existingProductCategory = productCategoryRepository.findById(id).orElse(null);
-        if (existingProductCategory != null) {
-            productCategoryRepository.delete(existingProductCategory);
-        } else {
-            throw new UserRegistrationException("Product Category not found");
+    public boolean deleteProductCategory(int id) {
+        if (productCategoryRepository.existsById(id)) {
+            productCategoryRepository.deleteById(id);
+            return true;
         }
+        return false;
+    }
+
+    private List<ProductCategoryDto> convertToDtoList(List<ProductCategory> productCategories) {
+        return productCategories.stream()
+                .map(this::convertToDto)
+                .collect(Collectors.toList());
+    }
+
+    private ProductCategoryDto convertToDto(ProductCategory productCategory) {
+        ProductCategoryDto productCategoryDto = new ProductCategoryDto();
+        productCategoryDto.setId(productCategory.getId());
+        productCategoryDto.setTitle(productCategory.getTitle());
+        productCategoryDto.setDescription(productCategory.getDescription());
+        productCategoryDto.setImage(productCategory.getImage());
+        productCategoryDto.setActivate(productCategory.isActivate());
+        productCategoryDto.setCreatedDate(productCategory.getCreatedDate());
+        productCategoryDto.setModifiedDate(productCategory.getModifiedDate());
+        return productCategoryDto;
+    }
+
+    private ProductCategory convertToEntity(ProductCategoryDto productCategoryDto) {
+        ProductCategory productCategory = new ProductCategory();
+        productCategory.setId(productCategoryDto.getId());
+        productCategory.setTitle(productCategoryDto.getTitle());
+        productCategory.setDescription(productCategoryDto.getDescription());
+        productCategory.setImage(productCategoryDto.getImage());
+        productCategory.setActivate(productCategoryDto.isActivate());
+        productCategory.setCreatedDate(productCategoryDto.getCreatedDate());
+        productCategory.setModifiedDate(productCategoryDto.getModifiedDate());
+        return productCategory;
     }
 }

@@ -8,6 +8,7 @@ import com.example.DoAnWebJava.repositories.NewsRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
@@ -24,31 +25,45 @@ public class NewsService {
     public NewsService(NewsRepository newsRepository) {
         this.newsRepository = newsRepository;
     }
+    public int getTotalNews(String searchString, boolean isActivate) {
+        if (isActivate) {
+            return newsRepository.countByTitleContainingIgnoreCaseAndIsActivate(searchString, true);
+        } else {
+            return newsRepository.countByTitleContainingIgnoreCase(searchString);
+        }
+    }
 
+    public List<NewsDto> getPaginatedNews(int page, int pageSize, String searchString, boolean isActivate ) {
+        int startIndex = (page - 1) * pageSize;
+        int endIndex = startIndex + pageSize;
+
+        List<News> allNews = newsRepository.findAll();
+        List<News> filteredNews = filterNews(allNews, searchString, isActivate);
+
+        if (startIndex >= filteredNews.size()) {
+            return Collections.emptyList();
+        } else {
+            List<News> paginatedNews = filteredNews.subList(startIndex, Math.min(endIndex, filteredNews.size()));
+            return convertToDtoList(paginatedNews);
+        }
+    }
+
+    private List<News> filterNews(List<News> newsList, String searchString, boolean isActivate) {
+        return newsList.stream()
+                .filter(news -> isNewsMatchSearchCriteria(news, searchString))
+                .filter(news -> news.isActivate() == isActivate )
+                .collect(Collectors.toList());
+    }
+
+    private boolean isNewsMatchSearchCriteria(News news, String searchString) {
+        String title = news.getTitle();
+        return title.contains(searchString);
+    }
     public List<NewsDto> getAllNewsDtos() {
         List<News> newsList = newsRepository.findAll();
         return convertToDtoList(newsList);
     }
 
-    public List<NewsDto> getActiveNewsDtos(boolean isActive) {
-        List<News> newsList = newsRepository.findByIsActivate(isActive);
-        return convertToDtoList(newsList);
-    }
-
-    public List<NewsDto> getNewsDtosByIsHome(boolean isHome) {
-        List<News> newsList = newsRepository.findByIsHome(isHome);
-        return convertToDtoList(newsList);
-    }
-
-    public List<NewsDto> getNewsDtosByIsSale(boolean isSale) {
-        List<News> newsList = newsRepository.findByIsSale(isSale);
-        return convertToDtoList(newsList);
-    }
-
-    public List<NewsDto> getNewsDtosByIsHot(boolean isHot) {
-        List<News> newsList = newsRepository.findByIsHot(isHot);
-        return convertToDtoList(newsList);
-    }
 
     public NewsDto getNewsDtoById(int id) {
         Optional<News> newsOptional = newsRepository.findById(id);

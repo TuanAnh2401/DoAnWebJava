@@ -23,23 +23,25 @@ public class ContactController {
     @GetMapping("/paginate")
     public ResponseEntity<ResponsePaging<List<Contact>>> getPaginatedContacts(
             @RequestParam(defaultValue = "1") int page,
-            @RequestParam(defaultValue = "") String searchString
+            @RequestParam(defaultValue = "") String searchString,
+            @RequestParam(defaultValue = "true") boolean isActivate
     ) {
         int pageSize = 10; // Kích thước trang (số lượng liên hệ trên mỗi trang)
-        int totalContacts = contactService.getTotalContacts(searchString);
+        int totalContacts = contactService.getTotalContacts(searchString, isActivate);
         int totalPages = (int) Math.ceil((double) totalContacts / pageSize);
 
         // Giới hạn số trang hiện tại trong khoảng từ 1 đến tổng số trang
         page = Math.max(1, Math.min(page, totalPages));
 
         // Lấy danh sách liên hệ phân trang từ Service
-        List<Contact> contacts = contactService.getPaginatedContacts(page, pageSize, searchString);
+        List<Contact> contacts = contactService.getPaginatedContacts(page, pageSize, searchString, isActivate);
 
         // Tạo đối tượng ResponsePaging để chứa thông tin phân trang và danh sách liên hệ
         ResponsePaging<List<Contact>> responsePaging = new ResponsePaging<>(contacts, totalPages, page, totalContacts);
 
         return ResponseEntity.ok(responsePaging);
     }
+
 
 
     @GetMapping("/{id}")

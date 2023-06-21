@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title th:text="${pageTitle}"></title>
+  <th:block th:replace="~{admin/layouts/_header::link-css}"></th:block>
+</head>
+<body>
+<div th:replace="~{admin/layouts/_header :: header}"></div>
+<div class="content-wrapper">
+  <div class="row">
+    <div class="col-12">
+      <div class="card">
+        <div class="card-body">
+          <div class="tab-content">
+            <div class="active tab-pane" id="activity">
+              <form id="addCouponForm">
+                <div class="form-group">
+                  <label>Mã code</label>
+                  <input type="text" name="code" id="code" class="form-control" required />
+                </div>
+                <div class="form-group">
+                  <label>Khuyến mãi (%)</label>
+                  <input type="number" name="discount" id="discount" class="form-control" required />
+                </div>
+                <div class="form-group">
+                  <label>Trạng thái kích hoạt</label>
+                  <div class="custom-control custom-switch">
+                    <input type="checkbox" name="isActivate" id="isActivate" class="custom-control-input" />
+                    <label class="custom-control-label" for="isActivate">Kích hoạt</label>
+                  </div>
+                </div>
+                <div class="form-group">
+                  <button type="button" class="btn btn-success" onclick="addCoupon()">Thêm mới</button>
+                  <a href="/admin/coupons" class="btn btn-danger">Quay lại</a>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<div th:replace="~{admin/layouts/_footer :: footer}"></div>
+<script>
+  function addCoupon() {
+    var couponData = {
+      code: $("#code").val(),
+      discount: parseInt($("#discount").val()),
+      isActivate: $("#isActivate").prop("checked")
+    };
+
+    // Gọi API để thêm mới coupon
+    $.ajax({
+      url: "/api/coupons/add",
+      type: "POST",
+      contentType: "application/json",
+      data: JSON.stringify(couponData),
+      success: function (response) {
+        // Xử lý thành công
+        alert(response);
+        window.location.href = "/admin/coupon"; // Chuyển hướng về "/admin/coupons"
+      },
+      error: function () {
+        // Xử lý lỗi
+        alert("Lỗi khi thêm mới coupon!");
+      }
+    });
+  }
+</script>
+</body>
+</html>

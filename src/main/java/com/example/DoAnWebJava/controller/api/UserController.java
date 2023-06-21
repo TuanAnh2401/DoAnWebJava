@@ -4,15 +4,18 @@ import com.example.DoAnWebJava.dto.LoginDto;
 import com.example.DoAnWebJava.dto.LoginResponseDto;
 import com.example.DoAnWebJava.dto.UpdateDto;
 import com.example.DoAnWebJava.dto.UserDto;
+import com.example.DoAnWebJava.entities.Coupon;
 import com.example.DoAnWebJava.entities.User;
 import com.example.DoAnWebJava.repositories.UserRegistrationException;
 import com.example.DoAnWebJava.service.UserService;
+import com.example.DoAnWebJava.support.ResponsePaging;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.Map;
 
 @RestController
@@ -26,6 +29,26 @@ public class UserController {
         this.userService = userService;
     }
 
+    @GetMapping("/paginate")
+    public ResponseEntity<ResponsePaging<List<User>>> getPaginatedUsers(
+            @RequestParam(defaultValue = "1") int page,
+            @RequestParam(defaultValue = "") String searchString
+    ) {
+        int pageSize = 10; // Kích thước trang (số lượng liên hệ trên mỗi trang)
+        int totalUsers = userService.getTotalUsers(searchString);
+        int totalPages = (int) Math.ceil((double) totalUsers / pageSize);
+
+        // Giới hạn số trang hiện tại trong khoảng từ 1 đến tổng số trang
+        page = Math.max(1, Math.min(page, totalPages));
+
+        // Lấy danh sách liên hệ phân trang từ Service
+        List<User> users = userService.getPaginatedContacts(page, pageSize, searchString);
+
+        // Tạo đối tượng ResponsePaging để chứa thông tin phân trang và danh sách liên hệ
+        ResponsePaging<List<User>> responsePaging = new ResponsePaging<>(users, totalPages, page, totalUsers);
+
+        return ResponseEntity.ok(responsePaging);
+    }
     @PostMapping("/register")
     public ResponseEntity<String> registerUser(@Valid @RequestBody UserDto userDto) {
         try {
@@ -104,7 +127,6 @@ public class UserController {
             return ResponseEntity.badRequest().body(null);
         }
     }
-
 }
 
 

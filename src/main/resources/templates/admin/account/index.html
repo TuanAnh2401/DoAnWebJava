@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title th:text="${pageTitle}"></title>
+  <th:block th:replace="~{admin/layouts/_header::link-css}"></th:block>
+</head>
+<body>
+<div th:replace="~{admin/layouts/_header :: header}"></div>
+<div class="content-wrapper">
+  <div class="container">
+    <h1 th:text="${pageTitle}"></h1>
+
+    <form id="searchForm" method="get">
+      <div class="form-group">
+        <input type="text" class="form-control" name="searchString" placeholder="Tìm kiếm người dùng">
+      </div>
+      <button type="submit" class="btn btn-primary">Tìm kiếm</button>
+    </form>
+    <div class="card-tools">
+      <a href="#" class="btn btn-danger" id="BtnDeleteAll">Xóa</a>
+    </div>
+    <table id="usersTable" class="table table-hover">
+      <thead>
+      <tr>
+        <th><input type="checkbox" id="SelectAll"></th>
+        <th>STT</th>
+        <th>Tên tài khoản</th>
+        <th>Tên</th>
+        <th>Email</th>
+        <th>Điện thoại</th>
+        <th>Địa chỉ</th>
+        <th></th>
+      </tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+
+    <div class="row">
+      <div class="col-12">
+        <ul id="pagination" class="pagination"></ul>
+      </div>
+    </div>
+  </div>
+</div>
+<div th:replace="~{admin/layouts/_footer :: footer}"></div>
+<script>
+    $(document).ready(function () {
+        var currentPage = 1;
+
+        function loadUsers(pageNumber = 1, searchString = "") {
+            $.ajax({
+                url: 'http://localhost:2009/api/users/paginate',
+                type: 'GET',
+                data: {
+                    page: pageNumber,
+                    searchString: searchString
+                },
+                success: function (response) {
+                    var users = response.data;
+                    var totalPages = response.totalPages;
+                    var tableBody = $('#usersTable tbody');
+                    tableBody.empty();
+
+                    if (users.length > 0) {
+                        var i = ((pageNumber - 1) * 10) + 1;
+                        users.forEach(function (user) {
+                            var row = $('<tr>').attr('id', 'trow_' + user.username);
+                            row.append('<td><input type="checkbox" class="cbkItem" value="' + user.username + '" /></td>');
+                            row.append('<td>' + i + '</td>');
+                            row.append('<td>' + user.username + '</td>');
+                            row.append('<td>' + user.name + '</td>');
+                            row.append('<td>' + user.email + '</td>');
+                            row.append('<td>' + user.phone + '</td>');
+                            row.append('<td>' + user.address + '</td>');
+                            row.append('<td>' +
+                                '<a style="margin-right:5px;" href="/admin/user/edit/' + user.username + '" class="btn btn-sm btn-primary">Sửa</a>' +
+
+                                '</td>');
+
+                            tableBody.append(row);
+                            i++;
+                        });
+                    } else {
+                        var row = $('<tr>').append('<td colspan="8">Không có dữ liệu người dùng!!!</td>');
+                        tableBody.append(row);
+                    }
+                    updatePagination(totalPages, pageNumber, searchString);
+                },
+                error: function (xhr, status, error) {
+                    console.log(error);
+                }
+            });
+        }
+
+        function updatePagination(totalPages, currentPage, searchString) {
+            var pagination = $('#pagination');
+            pagination.empty();
+
+            for (var i = 1; i <= totalPages; i++) {
+                var pageLink = $('<li class="page-item">');
+                if (i === currentPage) {
+                    pageLink.addClass('active');
+                }
+                pageLink.append('<a class="page-link" href="#">' + i + '</a>');
+                pagination.append(pageLink);
+            }
+
+            // Lắng nghe sự kiện click trên các liên kết phân trang
+            pagination.find('.page-link').click(function (e) {
+                e.preventDefault();
+                var pageNumber = parseInt($(this).text());
+                loadUsers(pageNumber, searchString);
+            });
+        }
+
+        $('#searchForm').submit(function (e) {
+            e.preventDefault();
+            var searchString = $('input[name="searchString"]').val();
+            loadUsers(1, searchString);
+        });
+
+        loadUsers(currentPage);
+    });
+
+</script>
+</body>
+</html>

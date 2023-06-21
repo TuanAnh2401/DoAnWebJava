@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Sign Up Form by Colorlib</title>
+
+    <!-- Font Icon -->
+
+
+    <!-- Main css -->
+    <link rel="stylesheet" type="text/css" th:href="@{/Content/loginnew/login.css}">
+    <link th:fragment="link-css" rel="stylesheet" th:href="@{/content/PagedList.css}">
+</head>
+<body>
+
+<div class="main">
+
+    <!-- Sign up form -->
+    <section class="signup">
+        <div class="container">
+            <div class="signup-content">
+                <div class="signup-form">
+                    <h2 class="form-title">Sign up</h2>
+                    <form method="POST" class="register-form" id="register-form" >
+                        <div class="form-group">
+                            <label for="username"><i class="zmdi zmdi-account material-icons-name"></i></label>
+                            <input type="text" name="username" id="username" placeholder="User Name" />
+                        </div>
+                        <div class="form-group">
+                            <label for="name"><i class="zmdi zmdi-account material-icons-name"></i></label>
+                            <input type="text" name="name" id="name" placeholder="Your Name" />
+                        </div>
+                        <div class="form-group">
+                            <label for="email"><i class="zmdi zmdi-email"></i></label>
+                            <input type="email" name="email" id="email" placeholder="Your Email" />
+                        </div>
+                        <div class="form-group">
+                            <label for="pass"><i class="zmdi zmdi-lock"></i></label>
+                            <input type="password" name="password" id="pass" placeholder="Password" />
+                        </div>
+                        <div class="form-group">
+                            <label for="repass"><i class="zmdi zmdi-lock-outline"></i></label>
+                            <input type="password" name="repass" id="repass" placeholder="Repeat your password" />
+                        </div>
+                        <div class="form-group">
+
+                            <input type="hidden" name="avt" id="avt" value="abc.jpg"  />
+                        </div>
+
+                        <div class="form-group">
+                            <label for="phone"><i class="zmdi zmdi-email"></i></label>
+                            <input type="phone" name="phone" id="phone" placeholder="Phone" />
+                        </div>
+                        <div class="form-group">
+                            <label for="address"><i class="zmdi zmdi-email"></i></label>
+                            <input type="text" name="address" id="address" placeholder="Address" />
+                        </div>
+                        <div class="form-group">
+                            <input type="checkbox" name="agree-term" id="agree-term" class="agree-term" />
+                            <label for="agree-term" class="label-agree-term"><span><span></span></span>I agree all statements in <a href="#" class="term-service">Terms of service</a></label>
+                        </div>
+                        <div class="form-group form-button">
+                            <input type="submit" name="signup" id="signup" class="form-submit" value="Register" onclick="registerUser(event)" />
+                        </div>
+                    </form>
+                </div>
+                <div class="signup-image">
+                    <figure><img th:src="@{/Content/loginnew/signup-image.jpg}" alt="sign up image" /></figure>
+                    <a href="/account/login" class="signup-image-link">I am already a member</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Sing in  Form -->
+
+
+</div>
+
+<!-- JS -->
+
+<script>
+    function registerUser(event) {
+        event.preventDefault();
+        // Lấy giá trị từ form
+        var settingData = {
+            username: $("input[name='username']").val(),
+            password: $("input[name='password']").val(),
+            name: $("input[name='name']").val(),
+            email: $("input[name='email']").val(),
+            avt: $("input[name='avt']").val(),
+            phone: $("input[name='phone']").val(),
+            address: $("input[name='address']").val()
+        };
+
+        // Gọi API để đăng ký người dùng
+        $.ajax({
+            url: "http://localhost:2009/api/users/register",
+            type: "POST",
+            contentType: "application/json",
+            data: JSON.stringify(settingData),
+            success: function (response) {
+                alert("Đăng ký thành công!");
+                // Chuyển hướng đến trang sau khi đăng ký thành công
+                window.location.href = "/";
+            },
+            error: function () {
+                // Xử lý lỗi
+                alert("Đăng ký thất bại!");
+            }
+        });
+    }
+</script>
+
+</body>
+<script th:src="@{/content/loginnew/jquery.min.js}"></script>
+<script th:src="@{/content/loginnew/main.js}"></script>

@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title th:text="${pageTitle}"></title>
+  <th:block th:replace="~{admin/layouts/_header::link-css}"></th:block>
+</head>
+<body>
+<div th:replace="~{admin/layouts/_header :: header}"></div>
+<div class="content-wrapper">
+  <section class="content">
+    <div class="card">
+      <div class="card-header">
+        <h3 class="card-title">Cập nhập Thông tin Sản phẩm</h3>
+      </div>
+      <div class="card-body">
+        <form action="/admin/news/add" method="post" enctype="multipart/form-data">
+          <div class="card">
+            <input type="hidden" name="id" th:value="${id}"></input>
+            <div class="card-body">
+              <div class="tab-content">
+                <div class="active tab-pane" id="activity">
+                  <div class="form-group">
+                    <label for="title">Tiêu đề</label>
+                    <input type="text" id="title" name="title" class="form-control" placeholder="Tiêu đề" required>
+                  </div>
+
+                  <div class="form-group">
+                    <label for="productCategoryId">Loại sản phẩm</label>
+                    <select id="productCategoryId" name="productCategoryId" class="form-control" required>
+                      <option value="">-- Chọn loại sản phẩm --</option>
+                    </select>
+                  </div>
+                  <div class="form-group">
+                    <label for="supplierId">Nhà cung cấp</label>
+                    <select id="supplierId" name="supplierId" class="form-control" required>
+                      <option value="">-- Chọn nhà cung cấp --</option>
+                    </select>
+                  </div>
+                  <div class="form-group">
+                    <label for="image">Ảnh đại diện</label>
+                    <input type="file" id="image" name="image" class="form-control-file">
+                    <input type="hidden" id="imagePath" name="imagePath">
+                  </div>
+
+                  <div class="form-group">
+                    <label for="description">Mô tả</label>
+                    <input type="text" id="description" name="description" class="form-control" placeholder="Mô tả" required>
+                  </div>
+
+                  <div class="form-group">
+                    <label for="detail">Chi tiết sản phẩm</label>
+                    <textarea id="detail" name="detail" class="form-control" rows="4" placeholder="Chi tiết sản phẩm" required></textarea>
+                  </div>
+                  <div class="row">
+                    <div class="col-3">
+                      <div class="form-group">
+                        <label for="quantity">Số lượng</label>
+                        <input type="number" name="quantity" id="quantity" value="0" class="form-control auto" data-a-dec="." data-a-sep=",">
+                      </div>
+                    </div>
+                    <div class="col-3">
+                      <div class="form-group">
+                        <label for="price">Giá</label>
+                        <input type="number" name="price" id="price" value="0" class="form-control auto" data-a-dec="." data-a-sep=",">
+                      </div>
+                    </div>
+                    <div class="col-3">
+                      <div class="form-group">
+                        <label for="priceSale">Giá khuyến mại</label>
+                        <input type="number" name="priceSale" id="priceSale" value="0" class="form-control auto" data-a-dec="." data-a-sep=",">
+                      </div>
+                    </div>
+                    <div class="col-3">
+                      <div class="form-group">
+                        <label for="originalPrice">Giá nhập</label>
+                        <input type="number" name="originalPrice" id="originalPrice" value="0" class="form-control auto" data-a-dec="." data-a-sep=",">
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="row">
+                    <div class="row">
+                      <div class="col-3">
+                        <div class="form-group">
+                          <div class="custom-control custom-checkbox">
+                            <input type="checkbox" id="home" name="home" class="custom-control-input">
+                            <label for="home" class="custom-control-label">Hiển thị</label>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="col-3">
+                        <div class="form-group">
+                          <div class="custom-control custom-checkbox">
+                            <input type="checkbox" id="hot" name="hot" class="custom-control-input">
+                            <label for="hot" class="custom-control-label">Nổi bật</label>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="col-3">
+                        <div class="form-group">
+                          <div class="custom-control custom-checkbox">
+                            <input type="checkbox" id="sale" name="sale" class="custom-control-input">
+                            <label for="sale" class="custom-control-label">Khuyến mãi</label>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <button type="button" class="btn btn-success" onclick="updateSetting()">Lưu</button>
+            <a href="/admin/product" class="btn btn-danger">Quay lại</a>
+          </div>
+        </form>
+      </div>
+    </div>
+  </section>
+</div>
+<div th:replace="~{admin/layouts/_footer :: footer}"></div>
+<script>
+$(document).ready(function () {
+ $.ajax({
+      url: 'http://localhost:2009/api/product-categories/getAll',
+      type: 'GET',
+      dataType: 'json',
+      success: function (data) {
+        // Xử lý dữ liệu nhận được
+        if (data && data.length > 0) {
+          // Lặp qua danh sách chủ đề tin tức và thêm vào dropdown
+          var dropdown = $('#productCategoryId');
+          dropdown.empty();
+          $.each(data, function (index, category) {
+            dropdown.append($('<option></option>').attr('value', category.id).text(category.title));
+          });
+        }
+      },
+      error: function () {
+        // Xử lý khi gặp lỗi
+        alert('Không thể lấy danh sách chủ đề tin tức từ API.');
+      },
+    });
+  $.ajax({
+      url: 'http://localhost:2009/api/suppliers/getAll',
+      type: 'GET',
+      dataType: 'json',
+      success: function (data) {
+        // Xử lý dữ liệu nhận được
+        if (data && data.length > 0) {
+          // Lặp qua danh sách chủ đề tin tức và thêm vào dropdown
+          var dropdown = $('#supplierId');
+          dropdown.empty();
+          $.each(data, function (index, category) {
+            dropdown.append($('<option></option>').attr('value', category.id).text(category.title));
+          });
+        }
+      },
+      error: function () {
+        // Xử lý khi gặp lỗi
+        alert('Không thể lấy danh sách chủ đề tin tức từ API.');
+      },
+    });
+  var id = $("input[name='id']").val();
+  // Gọi API để lấy dữ liệu từ server
+  $.get("http://localhost:2009/api/products/" + id, function (data) {
+    // Cập nhật giá trị trong view
+    $("#title").val(data.title);
+    $("#description").val(data.description);
+
+    $('#productCategoryId').val(data.productCategoryId);
+    $('#supplierId').val(data.supplierId);
+    $('#imagePath').val(data.imagePath);
+
+    $('#detail').val(data.detail);
+    $('#quantity').val(data.quantity);
+    $('#price').val(data.price);
+    $('#priceSale').val(data.priceSale);
+    $('#originalPrice').val(data.originalPrice);
+
+    if (data.home) {
+      $('#home').prop('checked', true);
+    }
+    if (data.hot) {
+      $('#hot').prop('checked', true);
+    }
+    if (data.sale) {
+      $('#sale').prop('checked', true);
+    }
+  });
+});
+
+function updateSetting() {
+  var id = $("input[name='id']").val();
+  // Lấy giá trị từ form
+  var settingData = {
+    title: $("input[name='title']").val(),
+    productCategoryId: $("select[name='productCategoryId']").val(),
+    supplierId: $("select[name='supplierId']").val(),
+    image: $("input[name='image']").val(),
+    imagePath: $("input[name='imagePath']").val(),
+    description: $("input[name='description']").val(),
+    detail: $("textarea[name='detail']").val(),
+    quantity: $("input[name='quantity']").val(),
+    price: $("input[name='price']").val(),
+    priceSale: $("input[name='priceSale']").val(),
+    originalPrice: $("input[name='originalPrice']").val(),
+    home: $("input[name='home']").is(':checked'),
+    hot: $("input[name='hot']").is(':checked'),
+    sale: $("input[name='sale']").is(':checked'),
+  };
+
+  // Gọi API để lưu giá trị vào cơ sở dữ liệu
+  $.ajax({
+    url: "http://localhost:2009/api/products/update/" + id,
+    type: "PUT",
+    contentType: "application/json",
+    data: JSON.stringify(settingData),
+    success: function () {
+      // Xử lý thành công
+      alert("Lưu thành công!");
+      window.location.href = "/admin/product"; // Chuyển hướng về "/admin/product"
+    },
+    error: function () {
+      // Xử lý lỗi
+      alert("Lỗi khi lưu cấu hình!");
+    }
+  });
+}
+</script>
+</body>
+</html>

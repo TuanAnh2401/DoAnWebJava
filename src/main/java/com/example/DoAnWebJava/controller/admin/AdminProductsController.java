@@ -7,25 +7,25 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 @Controller
-@RequestMapping("/admin/news")
-public class AdminNewsController {
+@RequestMapping("/admin/product")
+public class AdminProductsController {
     @GetMapping
     public String home(Model model) {
-        model.addAttribute("pageTitle", "Quản lý Tin tức");
-        return "admin/news/index";
+        model.addAttribute("pageTitle", "Quản lý Sản phẩm");
+        return "admin/products/index";
     }
-    @GetMapping("/detail/{id}")
-    public String getNewsDetail(@PathVariable("id") String id, Model model) {
+    @GetMapping("/edit/{id}")
+    public String getAdvDetail(@PathVariable("id") String id, Model model) {
 
         model.addAttribute("id",id);
-        model.addAttribute("pageTitle", "Chi tiết");
+        model.addAttribute("pageTitle", "Cập nhật");
 
-        return "admin/news/detail";
+        return "admin/products/edit";
     }
     @GetMapping("/add")
     public String Add(Model model) {
         model.addAttribute("pageTitle", "Thêm mới");
 
-        return "admin/news/add";
+        return "admin/products/add";
     }
 }

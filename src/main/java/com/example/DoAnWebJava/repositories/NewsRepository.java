@@ -10,11 +10,5 @@ import java.util.List;
 public interface NewsRepository extends JpaRepository<News, Integer> {
     int countByTitleContainingIgnoreCaseAndIsActivate(String searchString, boolean isActivate);
 
-    int countByTitleContainingIgnoreCaseAndIsHome(String searchString, boolean isHome);
-
-    int countByTitleContainingIgnoreCaseAndIsSale(String searchString, boolean isSale);
-
-    int countByTitleContainingIgnoreCaseAndIsHot(String searchString, boolean isHot);
-
     int countByTitleContainingIgnoreCase(String searchString);
 }

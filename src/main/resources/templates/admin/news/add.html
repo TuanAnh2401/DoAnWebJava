@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title th:text="${pageTitle}"></title>
+  <th:block th:replace="~{admin/layouts/_header::link-css}"></th:block>
+</head>
+<body>
+<div th:replace="~{admin/layouts/_header :: header}"></div>
+<div class="content-wrapper">
+  <section class="content">
+    <div class="card">
+      <div class="card-header">
+        <h3 class="card-title">Thông tin thêm mới Tin tức</h3>
+      </div>
+      <div class="card-body">
+        <form action="/admin/news/add" method="post" enctype="multipart/form-data">
+          <div class="card">
+            <div class="card-body">
+              <div class="tab-content">
+                <div class="active tab-pane" id="activity">
+                  <div class="form-group">
+                    <label for="title">Tiêu đề</label>
+                    <input type="text" id="title" name="title" class="form-control" placeholder="Tiêu đề" required>
+                  </div>
+
+                  <div class="form-group">
+                    <label for="newsCategoryId">Chủ đề</label>
+                    <select id="newsCategoryId" name="newsCategoryId" class="form-control" required>
+                      <option value="">-- Chọn chủ đề --</option>
+                    </select>
+                  </div>
+
+                  <div class="form-group">
+                    <label for="image">Ảnh đại diện</label>
+                    <input type="file" id="image" name="image" class="form-control-file">
+                    <input type="hidden" id="imagePath" name="imagePath">
+                  </div>
+
+                  <div class="form-group">
+                    <label for="description">Mô tả</label>
+                    <input type="text" id="description" name="description" class="form-control" placeholder="Mô tả" required>
+                  </div>
+
+                  <div class="form-group">
+                    <label for="detail">Chi tiết sản phẩm</label>
+                    <textarea id="detail" name="detail" class="form-control" rows="4" placeholder="Chi tiết sản phẩm" required></textarea>
+                  </div>
+                  <div class="row">
+                    <div class="row">
+                      <div class="col-3">
+                        <div class="form-group">
+                          <div class="custom-control custom-checkbox">
+                            <input type="checkbox" id="home" name="home" class="custom-control-input">
+                            <label for="home" class="custom-control-label">Hiển thị</label>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="col-3">
+                        <div class="form-group">
+                          <div class="custom-control custom-checkbox">
+                            <input type="checkbox" id="hot" name="hot" class="custom-control-input">
+                            <label for="hot" class="custom-control-label">Nổi bật</label>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="col-3">
+                        <div class="form-group">
+                          <div class="custom-control custom-checkbox">
+                            <input type="checkbox" id="sale" name="sale" class="custom-control-input">
+                            <label for="sale" class="custom-control-label">Khuyến mãi</label>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <button type="submit" class="btn btn-success">Thêm mới</button>
+            <a href="/admin/news" class="btn btn-danger">Quay lại</a>
+          </div>
+        </form>
+      </div>
+    </div>
+  </section>
+</div>
+<div th:replace="~{admin/layouts/_footer :: footer}"></div>
+<script>
+  $(document).ready(function () {
+    // Gọi API để lấy danh sách chủ đề tin tức
+    $.ajax({
+      url: 'http://localhost:2009/api/news-categories/getAll',
+      type: 'GET',
+      dataType: 'json',
+      success: function (data) {
+        // Xử lý dữ liệu nhận được
+        if (data && data.length > 0) {
+          // Lặp qua danh sách chủ đề tin tức và thêm vào dropdown
+          var dropdown = $('#newsCategoryId');
+          dropdown.empty();
+          $.each(data, function (index, category) {
+            dropdown.append($('<option></option>').attr('value', category.id).text(category.title));
+          });
+        }
+      },
+      error: function () {
+        // Xử lý khi gặp lỗi
+        alert('Không thể lấy danh sách chủ đề tin tức từ API.');
+      },
+    });
+
+    // Xử lý sự kiện submit form
+    $('form').submit(function (event) {
+      event.preventDefault(); // Ngăn chặn việc gửi form mặc định
+
+      // Lấy dữ liệu từ form
+      var title = $('#title').val();
+      var newsCategoryId = $('#newsCategoryId').val();
+      var image = $('#image')[0].files[0];
+      var description = $('#description').val();
+      var detail = CKEDITOR.instances.detail.getData();
+      var home = $('#home').is(':checked');
+      var hot = $('#hot').is(':checked');
+      var sale = $('#sale').is(':checked');
+
+      // Tạo đối tượng FormData để gửi dữ liệu
+      var formData = new FormData();
+      formData.append('title', title);
+      formData.append('newsCategoryId', newsCategoryId);
+      formData.append('description', description);
+      formData.append('detail', detail);
+      formData.append('home', home);
+      formData.append('hot', hot);
+      formData.append('sale', sale);
+
+      // Gửi Ajax request
+      uploadImage(image, function (imagePath) {
+        // Tạo đối tượng NewsDto với đường dẫn ảnh
+        var newsDto = {
+          id: 0,
+          title: title,
+          description: description,
+          detail: detail,
+          image: imagePath,
+          home: home,
+          sale: sale,
+          hot: hot,
+          isActivate: false,
+          newsCategoryId: parseInt(newsCategoryId),
+        };
+
+        // Gửi Ajax request để thêm tin tức
+        $.ajax({
+          url: 'http://localhost:2009/api/news/add',
+          type: 'POST',
+          data: JSON.stringify(newsDto),
+          contentType: 'application/json',
+          success: function (response) {
+            // Xử lý khi thành công
+            alert('Thêm tin tức thành công!');
+          },
+          error: function (xhr, status, error) {
+            // Xử lý khi gặp lỗi
+            alert('Lỗi khi thêm tin tức: ' + error);
+          },
+        });
+      });
+    });
+
+
+    // Khởi tạo CKEditor
+    CKEDITOR.replace('detail', {
+      customConfig: '/content/ckeditor/config.js',
+      extraAllowedContent: 'span',
+    });
+  });
+
+  function uploadImage(image, callback) {
+    var formData = new FormData();
+    formData.append('image', image);
+
+    $.ajax({
+      url: '/admin/upload', // Đường dẫn tới endpoint của ứng dụng để xử lý yêu cầu tải lên hình ảnh
+      type: 'POST',
+      data: formData,
+      contentType: false,
+      processData: false,
+      success: function (response) {
+        // Gọi callback và truyền đường dẫn hình ảnh đã được tải lên
+        callback(response);
+      },
+      error: function (xhr, status, error) {
+        console.log('Lỗi khi tải lên hình ảnh: ' + error);
+      },
+    });
+  }
+</script>
+</body>
+</html>

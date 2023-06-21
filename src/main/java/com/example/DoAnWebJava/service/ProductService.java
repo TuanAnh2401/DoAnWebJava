@@ -10,6 +10,7 @@ import com.example.DoAnWebJava.repositories.SupplierRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
@@ -30,36 +31,39 @@ public class ProductService {
         this.productRepository = productRepository;
     }
 
-    public List<ProductDto> getAllProductDtos() {
-        List<Product> products = productRepository.findAll();
-        return convertToDtoList(products);
+    public int getTotalProducts(String searchString, boolean isActivate) {
+        if (isActivate) {
+            return productRepository.countByTitleContainingIgnoreCaseAndIsActivate(searchString, true);
+        } else {
+            return productRepository.countByTitleContainingIgnoreCase(searchString);
+        }
     }
 
+    public List<ProductDto> getPaginatedProducts(int page, int pageSize, String searchString, boolean isActivate ) {
+        int startIndex = (page - 1) * pageSize;
+        int endIndex = startIndex + pageSize;
 
+        List<Product> allNews = productRepository.findAll();
+        List<Product> filteredNews = filterProducts(allNews, searchString, isActivate);
 
-    public List<ProductDto> getProductDtosByIsActive(boolean isActive) {
-        List<Product> products = productRepository.findByIsActivate(isActive);
-        return convertToDtoList(products);
+        if (startIndex >= filteredNews.size()) {
+            return Collections.emptyList();
+        } else {
+            List<Product> paginatedNews = filteredNews.subList(startIndex, Math.min(endIndex, filteredNews.size()));
+            return convertToDtoList(paginatedNews);
+        }
     }
 
-    public List<ProductDto> getProductDtosByIsHome(boolean isHome) {
-        List<Product> products = productRepository.findByIsHome(isHome);
-        return convertToDtoList(products);
+    private List<Product> filterProducts(List<Product> newsList, String searchString, boolean isActivate) {
+        return newsList.stream()
+                .filter(product -> isNewsMatchSearchCriteria(product, searchString))
+                .filter(product -> product.isActivate() == isActivate )
+                .collect(Collectors.toList());
     }
 
-    public List<ProductDto> getProductDtosByIsSale(boolean isSale) {
-        List<Product> products = productRepository.findByIsSale(isSale);
-        return convertToDtoList(products);
-    }
-
-    public List<ProductDto> getProductDtosByIsHot(boolean isHot) {
-        List<Product> products = productRepository.findByIsHot(isHot);
-        return convertToDtoList(products);
-    }
-
-    public List<ProductDto> getProductDtosByIsStatus(boolean isStatus) {
-        List<Product> products = productRepository.findByIsStatus(isStatus);
-        return convertToDtoList(products);
+    private boolean isNewsMatchSearchCriteria(Product product, String searchString) {
+        String title = product.getTitle();
+        return title.contains(searchString);
     }
 
     public ProductDto getProductDtoById(int id) {

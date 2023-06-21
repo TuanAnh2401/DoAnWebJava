@@ -1,8 +1,10 @@
 package com.example.DoAnWebJava.controller.api;
 
+import com.example.DoAnWebJava.dto.OrderDto;
 import com.example.DoAnWebJava.dto.ProductDto;
 import com.example.DoAnWebJava.entities.Product;
 import com.example.DoAnWebJava.service.ProductService;
+import com.example.DoAnWebJava.support.ResponsePaging;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -20,40 +22,26 @@ public class ProductController {
         this.productService = productService;
     }
 
-    @GetMapping("/getAll")
-    public ResponseEntity<List<ProductDto>> getAllProducts() {
-        List<ProductDto> allProducts = productService.getAllProductDtos();
-        return ResponseEntity.ok(allProducts);
-    }
+    @GetMapping("/paginate")
+    public ResponseEntity<ResponsePaging<List<ProductDto>>> getPaginatedContacts(
+            @RequestParam(defaultValue = "1") int page,
+            @RequestParam(defaultValue = "") String searchString,
+            @RequestParam(defaultValue = "true") boolean isActivate
+    ) {
+        int pageSize = 10; // Kích thước trang (số lượng liên hệ trên mỗi trang)
+        int totalContacts = productService.getTotalProducts(searchString, isActivate);
+        int totalPages = (int) Math.ceil((double) totalContacts / pageSize);
 
-    @GetMapping("/getActive/{isActive}")
-    public ResponseEntity<List<ProductDto>> getActiveProducts(@PathVariable boolean isActive) {
-        List<ProductDto> products = productService.getProductDtosByIsActive(isActive);
-        return ResponseEntity.ok(products);
-    }
+        // Giới hạn số trang hiện tại trong khoảng từ 1 đến tổng số trang
+        page = Math.max(1, Math.min(page, totalPages));
 
-    @GetMapping("/getHome/{isHome}")
-    public ResponseEntity<List<ProductDto>> getProductsByIsHome(@PathVariable boolean isHome) {
-        List<ProductDto> products = productService.getProductDtosByIsHome(isHome);
-        return ResponseEntity.ok(products);
-    }
+        // Lấy danh sách liên hệ phân trang từ Service
+        List<ProductDto> contacts = productService.getPaginatedProducts(page, pageSize, searchString, isActivate);
 
-    @GetMapping("/getSale/{isSale}")
-    public ResponseEntity<List<ProductDto>> getProductsByIsSale(@PathVariable boolean isSale) {
-        List<ProductDto> products = productService.getProductDtosByIsSale(isSale);
-        return ResponseEntity.ok(products);
-    }
+        // Tạo đối tượng ResponsePaging để chứa thông tin phân trang và danh sách liên hệ
+        ResponsePaging<List<ProductDto>> responsePaging = new ResponsePaging<>(contacts, totalPages, page, totalContacts);
 
-    @GetMapping("/getHot/{isHot}")
-    public ResponseEntity<List<ProductDto>> getProductsByIsHot(@PathVariable boolean isHot) {
-        List<ProductDto> products = productService.getProductDtosByIsHot(isHot);
-        return ResponseEntity.ok(products);
-    }
-
-    @GetMapping("/getStatus/{isStatus}")
-    public ResponseEntity<List<ProductDto>> getProductsByIsStatus(@PathVariable boolean isStatus) {
-        List<ProductDto> products = productService.getProductDtosByIsStatus(isStatus);
-        return ResponseEntity.ok(products);
+        return ResponseEntity.ok(responsePaging);
     }
 
     @GetMapping("/{id}")

@@ -8,10 +8,8 @@ import java.util.List;
 
 @Repository
 public interface ProductRepository extends JpaRepository<Product, Integer> {
-    List<Product> findByIsActivate(boolean isActivate);
-    List<Product> findByIsHome(boolean isHome);
-    List<Product> findByIsSale(boolean isSale);
-    List<Product> findByIsHot(boolean isHot);
-    List<Product> findByIsStatus(boolean isStatus);
+    int countByTitleContainingIgnoreCaseAndIsActivate(String searchString, boolean isActivate);
+
+    int countByTitleContainingIgnoreCase(String searchString);
 
 }

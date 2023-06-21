@@ -49,6 +49,7 @@ public class ContactService {
     private List<Contact> filterContacts(List<Contact> contacts, String searchString) {
         return contacts.stream()
                 .filter(contact -> isContactMatchSearchCriteria(contact, searchString))
+                .filter(Contact::isActivate)
                 .collect(Collectors.toList());
     }
 
@@ -56,9 +57,8 @@ public class ContactService {
 
         String name = contact.getName();
         String email = contact.getEmail();
-        boolean isActivate = contact.isActivate();
 
-        return name.contains(searchString) || email.contains(searchString) && isActivate;
+        return name.contains(searchString) || email.contains(searchString) ;
     }
 
 

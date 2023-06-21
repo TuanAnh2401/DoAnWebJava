@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <!-- Font Awesome -->
+  <link th:fragment="link-css" rel="stylesheet" th:href="@{/content/users/css/bootstrap.min.css}">
+  <!-- daterange picker -->
+  <link th:fragment="link-css" rel="stylesheet" th:href="@{/content/users/css/style.css}">
+  <!-- iCheck for checkboxes and radio inputs -->
+  <link th:fragment="link-css" rel="stylesheet" th:href="@{/content/users/css/responsive.css}">
+  <!-- Bootstrap Color Picker -->
+  <link th:fragment="link-css" rel="stylesheet" th:href="@{/content/users/css/colors1.css}">
+  <!-- Tempusdominus Bootstrap 4 -->
+  <link th:fragment="link-css" rel="stylesheet" th:href="@{/content/users/css/custom.css}">
+  <!-- Select2 -->
+  <link th:fragment="link-css" rel="stylesheet" th:href="@{/content/users/css/animate.css}">
+  <link th:fragment="link-css" rel="stylesheet" th:href="@{/content/users/revolution/css/settings.css}">
+  <!-- Bootstrap4 Duallistbox -->
+  <link th:fragment="link-css" rel="stylesheet" th:href="@{/content/users/custom.css}">
+  <!-- BS Stepper -->
+  <link th:fragment="link-css" rel="stylesheet" th:href="@{/content/users/css/account.css}">
+  <!-- dropzonejs -->
+  <link th:fragment="link-css" rel="stylesheet" th:href="@{/content/users/banner/fonts/iconic/css/material-design-iconic-font.min.css}">
+  <!-- Theme style -->
+  <link th:fragment="link-css" rel="stylesheet" th:href="@{/content/users/banner/vendor/animate/animate.css}">
+  <link th:fragment="link-css" rel="stylesheet" th:href="@{/content/users/banner/vendor/slick/slick.css}">
+  <link th:fragment="link-css" rel="stylesheet" th:href="@{/content/users/banner/css/main.css}">
+  <link th:fragment="link-css" rel="stylesheet" th:href="@{/content/users/banner/css/util.css}">
+
+  <link th:fragment="link-css" rel="stylesheet" th:href="@{/content/users/css/checkoutItem.css}">
+  <link th:fragment="link-css" rel="stylesheet" th:href="@{/content/users/css/mess.css}">
+
+  <script th:fragment="link-css" th:src="@{/scripts/jquery-3.6.0.min.js}"></script>
+</head>
+<body class="hold-transition sidebar-mini">
+<header th:fragment="header">
+  <div class="header_bottom ">
+    <div class="container">
+      <div class="row">
+        <div class="col-lg-3 col-md-12 col-sm-12 col-xs-12">
+          <!-- logo start -->
+          <div class="logo"> <a href="/home/index"><img src="/static/Content/Images/logojava.png" alt="logo" /></a> </div>
+          <!-- logo end -->
+        </div>
+        <div class="col-lg-9 col-md-12 col-sm-12 col-xs-12">
+          <!-- menu start -->
+          <div class="menu_side">
+            <div id="navbar_menu">
+              <ul class="first-ul">
+                <li>
+                  <a  href="/home/index">Trang Chủ</a>
+                </li>
+                <li>
+                  <a  href="/news/index">Tin tức</a>
+                </li>
+                <li>
+                  <a  href="/home/sale">Khuyến Mãi</a>
+                </li>
+                <li>
+                  <a  href="/products/index">Sản Phẩm</a>
+                </li>
+                <li>
+                  <a  href="/home/contact">Liên Hệ</a>
+                </li>
+                <li class="js-show-cart">
+                  <a>
+                    <i class="fa fa-shopping-cart" aria-hidden="true"></i>
+                    <span id="checkout_items" class="checkout_items">0</span>
+                  </a>
+                </li>
+              </ul>
+            </div>
+          </div>
+          <!-- menu end -->
+        </div>
+      </div>
+    </div>
+  </div>
+</header>
+
+
+<footer th:fragment="footer" class="main-footer" xmlns:th="http://www.thymeleaf.org">
+  <div class="container-fuild">
+    <div class="row">
+      <div class="map_section" style="padding:10px 0 10px 20px">
+        <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3918.4205948965823!2d106.78291401465324!3d10.855580060696438!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3175276e7ea103df%3A0xb6cf10bb7d719327!2sThu%20Duc%20Campus%20Hutech%20khu%20E!5e0!3m2!1svi!2s!4v1680541105633!5m2!1svi!2s" style="border:0;  width:100%;height:350px " allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+      </div>
+      <div class="footer_blog">
+        <div class="row">
+          <div class="col-md-6">
+            <div class="main-heading left_text">
+              <h2>Liên kết bổ sung</h2>
+            </div>
+            <ul class="footer-menu">
+              <li><a href="/home/index"><i class="fa fa-angle-right"></i> Trang chủ </a></li>
+              <li><a href="/products/index"><i class="fa fa-angle-right"></i> Sản phẩm </a></li>
+              <li><a href="/news/index"><i class="fa fa-angle-right"></i> Tin tức</a></li>
+              <li><a href="/home/contact"><i class="fa fa-angle-right"></i> Liên hệ</a></li>
+            </ul>
+          </div>
+          <div class="col-md-6">
+            <div class="main-heading left_text">
+              <h2>Liên hệ với chúng tôi</h2>
+            </div>
+            <p style="width:400px">
+              @SettingHelper.GetValue("SettingAddress")<br />
+              <span style="font-size:18px;"><a href="tel:@SettingHelper.GetValue("SettingHotline")">@SettingHelper.GetValue("SettingHotline")</a></span>
+            </p>
+            <div class="footer_mail-section" style="float:inherit">
+              <form>
+                <fieldset>
+                  <div class="field row" style="padding-left:5px">
+                    <input placeholder="Email" type="text">
+                    <button class="button_custom"><i class="fa fa-envelope" aria-hidden="true"></i></button>
+                  </div>
+                </fieldset>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="cprt">
+        <p>HutechGear © Copyrights 2019 Design by html.design</p>
+      </div>
+    </div>
+  </div>
+</footer>
+<div th:fragment="content"></div>
+</body>
+</html>

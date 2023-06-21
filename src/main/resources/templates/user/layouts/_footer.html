@@ -4,41 +4,41 @@
     </div>
     <strong>&copy; 2014-2023 <a href="https://adminlte.io">AdminLTE.io</a>.</strong> All rights reserved.
 
-    <script th:src="@{/scripts/jquery-3.6.0.min.js}"></script>
-    <!-- Bootstrap -->
-    <script th:src="@{/content/assets/js/popper.js}"></script>
-    <script th:src="@{/content/assets/js/bootstrap.min.js}"></script>
+    <script th:src="@{/Content/users/js/jquery.min.js}"></script>
+    <script th:src="@{/Content/users/js/bootstrap.min.js}"></script>
+    <!-- menu js -->
+    <script th:src="@{/Content/users/js/menumaker.js}"></script>
+    <!-- wow animation -->
+    <script th:src="@{/Content/users/js/wow.js}"></script>
+    <!-- custom js -->
+    <script th:src="@{/Content/users/js/custom.js}"></script>
+    <!-- revolution js files -->
+    <script th:src="@{/Content/users/revolution/js/jquery.themepunch.tools.min.js}"></script>
+    <script th:src="@{/Content/users/revolution/js/jquery.themepunch.revolution.min.js}"></script>
+    <script th:src="@{/Content/users/revolution/js/extensions/revolution.extension.actions.min.js}"></script>
+    <script th:src="@{/Content/users/revolution/js/extensions/revolution.extension.carousel.min.js}"></script>
+    <script th:src="@{/Content/users/revolution/js/extensions/revolution.extension.kenburn.min.js}"></script>
+    <script th:src="@{/Content/users/revolution/js/extensions/revolution.extension.layeranimation.min.js}"></script>
+    <script th:src="@{/Content/users/revolution/js/extensions/revolution.extension.migration.min.js}"></script>
+    <script th:src="@{/Content/users/revolution/js/extensions/revolution.extension.parallax.min.js}"></script>
+    <script th:src="@{/Content/users/revolution/js/extensions/revolution.extension.slideanims.min.js}"></script>
+    <script th:src="@{/Content/users/revolution/js/extensions/revolution.extension.video.min.js}"></script>
+    <script th:src="@{/Content/users/revolution/js/extensions/revolution.extension.navigation.min.js}"></script>
+    <!-- Banner js files -->
+    <script th:src="@{/Content/users/banner/vendor/slick/slick.min.js}"></script>
+    <script th:src="@{/Content/users/banner/js/slick-custom.js}"></script>
+    <!-- shoppingCart js files -->
+    <script th:src="@{/Scripts/jsShopping.js}"></script>
+    <!-- Account js -->
+    <script th:src="@{/Content/login/js/accountShow.js}"></script>
+    <!-- Cart js -->
+    <script th:src="@{/Content/users/CartShow.js}"></script>
+    <!-- Mess js -->
+    <script th:src="@{/Content/users/MessShow.js}"></script>
+    <!-- Check input js -->
+    <script th:src="@{/Content/users/mainCheck.js}"></script>
+    <script th:src="@{/Content/users/contact.js}"></script>
+    <!-- Loading cart js -->
+    <script th:src="@{/Content/users/checkOutCart.js}"></script>
 
-    <!-- Plugins -->
-    <script th:src="@{/content/assets/js/owl-carousel.js}"></script>
-    <script th:src="@{/content/assets/js/accordions.js}"></script>
-    <script th:src="@{/content/assets/js/datepicker.js}"></script>
-    <script th:src="@{/content/assets/js/scrollreveal.min.js}"></script>
-    <script th:src="@{/content/assets/js/waypoints.min.js}"></script>
-    <script th:src="@{/content/assets/js/jquery.counterup.min.js}"></script>
-    <script th:src="@{/content/assets/js/imgfix.min.js}"></script>
-    <script th:src="@{/content/assets/js/slick.js}"></script>
-    <script th:src="@{/content/assets/js/lightbox.js}"></script>
-    <script th:src="@{/content/assets/js/isotope.js}"></script>
-
-    <!-- Global Init -->
-    <script th:src="@{/content/assets/js/custom.js}"></script>
-
-    <script>
-
-        $(function() {
-            var selectedClass = "";
-            $("p").click(function(){
-            selectedClass = $(this).attr("data-rel");
-            $("#portfolio").fadeTo(50, 0.1);
-                $("#portfolio div").not("."+selectedClass).fadeOut();
-            setTimeout(function() {
-              $("."+selectedClass).fadeIn();
-              $("#portfolio").fadeTo(50, 1);
-            }, 500);
-
-            });
-        });
-
-    </script>
 </footer>

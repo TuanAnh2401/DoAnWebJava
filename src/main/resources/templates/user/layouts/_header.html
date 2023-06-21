@@ -3,85 +3,137 @@
       xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
       lang="en">
 <head>
-
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <meta name="description" content="">
-    <meta name="author" content="">
-
-
-
-
-
-    <!-- Additional CSS Files -->
-    <link th:fragment="link-css" rel="stylesheet" th:href="@{/content/assets/css/bootstrap.min.css}">
-
-    <link th:fragment="link-css" rel="stylesheet" th:href="@{/content/assets/css/font-awesome.css}">
-
-    <link th:fragment="link-css" rel="stylesheet" th:href="@{/css/shop.css}">
-
-    <link th:fragment="link-css" rel="stylesheet" th:href="@{/content/assets/css/owl-carousel.css}">
-
-    <link th:fragment="link-css" rel="stylesheet" th:href="@{/content/assets/css/lightbox.css}">
-    <!--
-
-    TemplateMo 571 Hexashop
-
-    https://templatemo.com/tm-571-hexashop
-
-    -->
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link th:fragment="link-css" rel="stylesheet" th:href="@{/Content/users/css/bootstrap.min.css}" />
+    <link th:fragment="link-css" rel="stylesheet" th:href="@{/Content/users/css/style.css}" />
+    <link th:fragment="link-css" rel="stylesheet" th:href="@{/Content/users/css/responsive.css}" />
+    <link th:fragment="link-css" rel="stylesheet" th:href="@{/Content/users/css/colors1.css}" />
+    <link th:fragment="link-css" rel="stylesheet" th:href="@{/Content/users/css/custom.css}" />
+    <link th:fragment="link-css" rel="stylesheet" th:href="@{/Content/users/css/animate.css}" />
+    <link th:fragment="link-css" th:href="@{/Content/users/revolution/css/layers.css}" rel="stylesheet" />
+    <link th:fragment="link-css" th:href="@{/Content/users/revolution/css/navigation.css}" rel="stylesheet" />
+    <link th:fragment="link-css" th:href="@{/Content/users/revolution/css/settings.css}" rel="stylesheet" />
+    <link th:fragment="link-css" th:href="@{/Content/users/custom.css}" rel="stylesheet" />
+    <link th:fragment="link-css" th:href="@{/Content/users/css/account.css}" rel="stylesheet" />
+    <link th:fragment="link-css" th:href="@{/Content/users/banner/fonts/iconic/css/material-design-iconic-font.min.css}" rel="stylesheet" />
+    <link th:fragment="link-css" th:href="@{/Content/users/banner/vendor/animate/animate.css}" rel="stylesheet" />
+    <link th:fragment="link-css" th:href="@{/Content/users/banner/vendor/slick/slick.css}" rel="stylesheet" />
+    <link th:fragment="link-css" th:href="@{/Content/users/banner/css/main.css}" rel="stylesheet" />
+    <link th:fragment="link-css" th:href="@{/Content/users/banner/css/util.css}" rel="stylesheet" />
+    <link th:fragment="link-css" th:href="@{/Content/users/css/checkoutItem.css}" rel="stylesheet" />
+    <link th:fragment="link-css" th:href="@{/Content/users/css/mess.css}" rel="stylesheet" />
 </head>
-<body >
+<body class="hold-transition sidebar-mini">
 <header th:fragment="header">
-    <!-- /.content-wrapper -->
-
-        <div class="container">
-            <div class="row">
-                <div class="col-12">
-                    <nav class="main-nav">
-                        <!-- ***** Logo Start ***** -->
-                        <a href="index.html" class="logo">
-                            <img src="assets/images/logo.png">
-                        </a>
-                        <!-- ***** Logo End ***** -->
-                        <!-- ***** Menu Start ***** -->
-                        <ul class="nav">
-                            <li class="scroll-to-section"><a href="#top" class="active">Home</a></li>
-                            <li class="scroll-to-section"><a href="#men" class="">Men's</a></li>
-                            <li class="scroll-to-section"><a href="#women">Women's</a></li>
-                            <li class="scroll-to-section"><a href="#kids">Kid's</a></li>
-                            <li class="submenu">
-                                <a href="javascript:;">Pages</a>
-                                <ul>
-                                    <li><a href="about.html">About Us</a></li>
-                                    <li><a href="products.html">Products</a></li>
-                                    <li><a href="single-product.html">Single Product</a></li>
-                                    <li><a href="contact.html">Contact Us</a></li>
+    <div class="bg_load">
+    </div>
+    <header id="default_header" class="header_style_1">
+        <div class="header_top container-menu-desktop">
+            <div class="container" style="padding-left:0px;padding-right:0px">
+                <div class="row">
+                    <div class="col-md-8">
+                        <div class="full">
+                            <div class="topbar-left">
+                                <ul class="list-inline">
+                                    <li>
+                                        <span class="topbar-label"><i class="fa  fa-home"></i></span>
+                                    </li>
+                                    <li>
+                                        <span class="topbar-label"><i class="fa fa-envelope-o"></i></span>
+                                        <span class="topbar-hightlight">
+                                    </span>
+                                    </li>
                                 </ul>
-                            </li>
-                            <li class="submenu">
-                                <a href="javascript:;">Features</a>
-                                <ul>
-                                    <li><a href="#">Features Page 1</a></li>
-                                    <li><a href="#">Features Page 2</a></li>
-                                    <li><a href="#">Features Page 3</a></li>
-                                    <li><a rel="nofollow" href="https://templatemo.com/page/4" target="_blank">Template Page 4</a></li>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="float-right">
+                            <div class="social_icon" style="padding-top:12px">
+                                <ul class="list-inline">
+                                    <li><a class="fa fa-facebook" href="https://www.facebook.com/" title="Facebook" target="_blank"></a></li>
+                                    <li><a class="fa fa-google-plus" href="https://plus.google.com/" title="Google+" target="_blank"></a></li>
+                                    <li><a class="fa fa-twitter" href="https://twitter.com" title="Twitter" target="_blank"></a></li>
+                                    <li><a class="fa fa-linkedin" href="https://www.linkedin.com" title="LinkedIn" target="_blank"></a></li>
+                                    <li><a class="fa fa-instagram" href="https://www.instagram.com" title="Instagram" target="_blank"></a></li>
                                 </ul>
-                            </li>
-                            <li class="scroll-to-section"><a href="#explore">Explore</a></li>
-                        </ul>
-                        <a class="menu-trigger">
-                            <span>Menu</span>
-                        </a>
-                        <!-- ***** Menu End ***** -->
-                    </nav>
+                            </div>
+                            <div class="account" id="account" style="width:200px; margin:0px auto">
+                                <a href="#">
+                                    Tài khoản
+                                    <i class="fa fa-angle-down"></i>
+                                </a>
+                                <ul class="account_selection" id="account-selection">
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
 
+        <div class="header_bottom ">
+            <div class="container">
+                <div class="row">
+                    <div class="col-lg-3 col-md-12 col-sm-12 col-xs-12">
+                        <div class="logo">
+                            <a href="/home/index">
+                            </a>
+                        </div>
+                    </div>
+                    <div class="col-lg-9 col-md-12 col-sm-12 col-xs-12">
+                        <div class="menu_side">
+                            <div id="navbar_menu">
+                                <ul class="first-ul">
+                                    <li>
+                                        <a th:class="${currentPath == '/home/index'} ? 'active' : ''" href="/home/index">Trang Chủ</a>
+                                    </li>
+                                    <li>
+                                        <a th:class="${currentPath == '/news/index'} ? 'active' : ''" href="/news/index">Tin tức</a>
+                                    </li>
+                                    <li>
+                                        <a th:class="${currentPath == '/home/sale'} ? 'active' : ''" href="/home/sale">Khuyến Mãi</a>
+                                    </li>
+                                    <li>
+                                        <a th:class="${currentPath == '/products/index'} ? 'active' : ''" href="/products/index">Sản Phẩm</a>
+                                    </li>
+                                    <li>
+                                        <a th:class="${currentPath == '/home/contact'} ? 'active' : ''" href="/home/contact">Liên Hệ</a>
+                                    </li>
+                                    <li class="js-show-cart">
+                                        <a>
+                                            <i class="fa fa-shopping-cart" aria-hidden="true"></i>
+                                            <span id="checkout_items" class="checkout_items">0</span>
+                                        </a>
+                                    </li>
+                                </ul>
+
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <div class="wrap-header-cart js-panel-cart">
+    </div>
+
+    <div class="wrap-header-mess js-panel-mess" >
+        <a href="#" class="chat-logo js-show-mess">
+            <img src="~/Content/users/images/messenger-logo-png-6.png" alt="Tin nhắn" class="logo-icon">
+            <div class="chat-view">
+                <!-- Nội dung view chat -->
+            </div>
+        </a>
+    </div>
+
+
 
 </header>
 <div th:fragment="content"></div>
-<div th:replace="~{user/layouts/_footer :: footer}"></div>
 </body>
 </html>

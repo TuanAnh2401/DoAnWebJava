@@ -12,6 +12,7 @@ public class UserHomeController {
     @GetMapping("")
     public String home(Model model) {
         model.addAttribute("pageTitle", "Trang chủ");
+        model.addAttribute("currentPath", "/home/index");
         return "user/home/index";
     }
 

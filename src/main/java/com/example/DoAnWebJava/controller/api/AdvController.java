@@ -23,23 +23,25 @@ public class AdvController {
     @GetMapping("/paginate")
     public ResponseEntity<ResponsePaging<List<Adv>>> getPaginatedAdvs(
             @RequestParam(defaultValue = "1") int page,
-            @RequestParam(defaultValue = "") String searchString
+            @RequestParam(defaultValue = "") String searchString,
+            @RequestParam(defaultValue = "true") boolean isActivate
     ) {
         int pageSize = 10; // Kích thước trang (số lượng liên hệ trên mỗi trang)
-        int totalAdvs = advService.getTotalAdvs(searchString);
+        int totalAdvs = advService.getTotalAdvs(searchString, isActivate);
         int totalPages = (int) Math.ceil((double) totalAdvs / pageSize);
 
         // Giới hạn số trang hiện tại trong khoảng từ 1 đến tổng số trang
         page = Math.max(1, Math.min(page, totalPages));
 
         // Lấy danh sách liên hệ phân trang từ Service
-        List<Adv> advs = advService.getPaginatedContacts(page, pageSize, searchString);
+        List<Adv> advs = advService.getPaginatedContacts(page, pageSize, searchString, isActivate);
 
         // Tạo đối tượng ResponsePaging để chứa thông tin phân trang và danh sách liên hệ
         ResponsePaging<List<Adv>> responsePaging = new ResponsePaging<>(advs, totalPages, page, totalAdvs);
 
         return ResponseEntity.ok(responsePaging);
     }
+
 
 
     @PostMapping("/add")

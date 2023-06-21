@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title th:text="${pageTitle}"></title>
+    <th:block th:replace="~{admin/layouts/_header::link-css}"></th:block>
+</head>
+<body>
+<div th:replace="~{admin/layouts/_header :: header}"></div>
+<div class="content-wrapper">
+    <div class="container">
+        <h1>Quản lý Tin tức</h1>
+
+        <form id="searchForm" method="get">
+            <div class="form-group">
+                <input type="text" class="form-control" name="searchString" placeholder="Tìm kiếm tin tức">
+            </div>
+            <button type="submit" class="btn btn-primary">Tìm kiếm</button>
+        </form>
+
+        <table id="newsTable" class="table table-hover">
+            <thead>
+            <tr>
+                <th><input type="checkbox" id="SelectAll"></th>
+                <th>STT</th>
+                <th>Hình ảnh</th>
+                <th>Tên tin tức</th>
+                <th>Chủ đề</th>
+                <th>Ngày tạo</th>
+                <th>Home</th>
+                <th>Sale</th>
+                <th>Hot</th>
+                <th></th>
+            </tr>
+            </thead>
+            <tbody></tbody>
+        </table>
+
+        <div class="row">
+            <div class="col-6"></div>
+            <div class="col-6" style="text-align: right;">
+                <ul id="pagination" class="pagination"></ul>
+            </div>
+        </div>
+    </div>
+</div>
+<div th:replace="~{admin/layouts/_footer :: footer}"></div>
+<script>
+    $(document).ready(function () {
+        var currentPage = 1;
+
+        function loadNews(pageNumber = 1, searchString = "") {
+            $.ajax({
+                url: 'http://localhost:2009/api/news/paginate',
+                type: 'GET',
+                data: {
+                    page: pageNumber,
+                    searchString: searchString
+                },
+                success: function (response) {
+                    var news = response.data;
+                    var totalPages = response.totalPages;
+                    var tableBody = $('#newsTable tbody');
+                    tableBody.empty();
+
+                    if (news.length > 0) {
+                        var i = ((pageNumber - 1) * 10) + 1;
+                        news.forEach(function (item) {
+                            var strCheckHome = item.isHome ? "<i class='fa fa-check text-success'></i>" : "<i class='fas fa-times text-danger'></i>";
+                            var strCheckSale = item.isSale ? "<i class='fa fa-check text-success'></i>" : "<i class='fas fa-times text-danger'></i>";
+                            var strCheckHot = item.isHot ? "<i class='fa fa-check text-success'></i>" : "<i class='fas fa-times text-danger'></i>";
+                            var row = $('<tr id="trow_'+item.id+'">');
+                            row.append('<td><input type="checkbox" class="cbkItem" value="'+item.id+'" /></td>');
+                            row.append('<td>' + i + '</td>');
+                            row.append('<td><img class="img-thumbnail" src="' + item.image + '" alt="Hình ảnh" width="100"></td>');
+                            row.append('<td>' + item.title + '</td>');
+                            row.append('<td id="category_' + item.id + '"></td>');
+                            row.append('<td>' + item.createdDate + '</td>');
+                            row.append('<td>' + strCheckHome + '</td>');
+                            row.append('<td>' + strCheckSale + '</td>');
+                            row.append('<td>' + strCheckHot + '</td>');
+                            row.append('<td><button type="button" class="btn btn-primary btn-sm btnEdit" data-id="'+item.id+'">Sửa</button></td>');
+                            tableBody.append(row);
+                            i++;
+
+                            // Gọi API để lấy tên của category
+                            $.ajax({
+                                url: 'http://localhost:2009/api/news-categories/' + item.category,
+                                type: 'GET',
+                                success: function (response) {
+                                    var categoryName = response.name;
+                                    $('#category_' + item.id).text(categoryName);
+                                },
+                                error: function (xhr, textStatus, error) {
+                                    console.log(xhr.responseText);
+                                }
+                            });
+                        });
+                    } else {
+                        tableBody.append('<tr><td colspan="10" class="text-center">Không tìm thấy tin tức nào.</td></tr>');
+                    }
+
+                    updatePagination(totalPages, pageNumber, searchString);
+                },
+                error: function (xhr, textStatus, error) {
+                    console.log(xhr.responseText);
+                }
+            });
+        }
+
+        function updatePagination(totalPages, currentPage, searchString) {
+            var pagination = $('#pagination');
+            pagination.empty();
+
+            for (var i = 1; i <= totalPages; i++) {
+                var pageLink = $('<li class="page-item">');
+                if (i === currentPage) {
+                    pageLink.addClass('active');
+                }
+                pageLink.append('<a class="page-link" href="#">' + i + '</a>');
+                pagination.append(pageLink);
+            }
+
+            // Lắng nghe sự kiện click trên các liên kết phân trang
+            pagination.find('.page-link').click(function(e) {
+                e.preventDefault();
+                var pageNumber = parseInt($(this).text());
+                loadNews(pageNumber, searchString);
+            });
+        }
+
+        $('#searchForm').submit(function (e) {
+            e.preventDefault();
+            loadNews(1, $('#searchForm input[name="searchString"]').val());
+        });
+
+        loadNews(currentPage);
+    });
+</script>
+</body>
+</html>

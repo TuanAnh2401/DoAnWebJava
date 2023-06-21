@@ -1,12 +1,9 @@
 package com.example.DoAnWebJava.service;
 
-import com.example.DoAnWebJava.entities.Adv;
 import com.example.DoAnWebJava.entities.Contact;
 import com.example.DoAnWebJava.repositories.ContactRepository;
 import com.example.DoAnWebJava.repositories.UserRegistrationException;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.Collections;
@@ -49,7 +46,7 @@ public class ContactService {
     private List<Contact> filterContacts(List<Contact> contacts, String searchString) {
         return contacts.stream()
                 .filter(contact -> isContactMatchSearchCriteria(contact, searchString))
-                .filter(Contact::isActivate)
+                .filter(contact -> !contact.isActivate())
                 .collect(Collectors.toList());
     }
 

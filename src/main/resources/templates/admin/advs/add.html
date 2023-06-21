@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title th:text="${pageTitle}"></title>
+    <th:block th:replace="~{admin/layouts/_header::link-css}"></th:block>
+</head>
+<body>
+<div th:replace="~{admin/layouts/_header :: header}"></div>
+<div class="content-wrapper">
+    <form th:action="@{/admin/settingSystem/add}" method="post" th:onsubmit="'return false;'" th:fragment="form">
+        <div class="row">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="tab-content">
+                            <div class="active tab-pane" id="activity">
+                                <div class="form-group">
+                                    <label>Tiêu đề trang</label>
+                                    <input type="text" name="title" class="form-control" />
+                                </div>
+                                <div class="form-group">
+                                    <label>Image</label>
+                                    <div class="input-group">
+                                        <div class="custom-file">
+                                            <input type="text" id="image" name="image" class="form-control" />
+                                        </div>
+                                        <div class="input-group-append">
+                                            <input type="button" value="Tải ảnh" id="ckfinder-popup-1" />
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label>Mô tả</label>
+                                    <input type="text" name="description" class="form-control" />
+                                </div>
+                                <div class="form-group">
+                                    <label>Đường dẫn</label>
+                                    <input type="text" name="link" class="form-control" />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-12">
+                <div>
+                    <button type="button" class="btn btn-success" onclick="saveSetting()">Lưu</button>
+                    <a href="/admin/adv" class="btn btn-danger">Quay lại</a>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+<div th:replace="~{admin/layouts/_footer :: footer}"></div>
+<script>
+    function saveSetting() {
+         e.preventDefault();
+        // Lấy giá trị từ form
+        var settingData = {
+            title: $("input[name='title']").val(),
+            image: $("input[name='image']").val(),
+            description: $("input[name='description']").val(),
+            link: $("input[name='link']").val(),
+        };
+
+        // Gọi API để lưu giá trị vào cơ sở dữ liệu
+        $.ajax({
+            url: "http://localhost:2009/api/adv/add",
+            type: "POST",
+            contentType: "application/json",
+            data: JSON.stringify(settingData),
+            success: function (response) {
+                // Xử lý thành công
+                console.log(response);
+                alert("Lưu thành công!");
+            },
+            error: function (error) {
+                // Xử lý lỗi
+                console.log(error);
+                alert("Lỗi khi lưu cấu hình!");
+            }
+        });
+    }
+</script>
+</body>
+</html>

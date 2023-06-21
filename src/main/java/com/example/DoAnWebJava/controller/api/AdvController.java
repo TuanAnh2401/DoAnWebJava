@@ -2,8 +2,10 @@ package com.example.DoAnWebJava.controller.api;
 
 
 import com.example.DoAnWebJava.entities.Adv;
+import com.example.DoAnWebJava.entities.Contact;
 import com.example.DoAnWebJava.repositories.UserRegistrationException;
 import com.example.DoAnWebJava.service.AdvService;
+import com.example.DoAnWebJava.support.ResponsePaging;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -18,16 +20,25 @@ public class AdvController {
     @Autowired
     private AdvService advService;
 
-    @GetMapping("/getAll")
-    public ResponseEntity<List<Adv>> getAllAdvs() {
-        List<Adv> all = advService.getAllAdvs();
-        return ResponseEntity.ok(all);
-    }
+    @GetMapping("/paginate")
+    public ResponseEntity<ResponsePaging<List<Adv>>> getPaginatedAdvs(
+            @RequestParam(defaultValue = "1") int page,
+            @RequestParam(defaultValue = "") String searchString
+    ) {
+        int pageSize = 10; // Kích thước trang (số lượng liên hệ trên mỗi trang)
+        int totalAdvs = advService.getTotalAdvs(searchString);
+        int totalPages = (int) Math.ceil((double) totalAdvs / pageSize);
 
-    @GetMapping("/getByActivate/{isActivate}")
-    public ResponseEntity<List<Adv>> getAdvsByActivate(@PathVariable boolean isActivate) {
-        List<Adv> advs = advService.getAdvsByActivate(isActivate);
-        return ResponseEntity.ok(advs);
+        // Giới hạn số trang hiện tại trong khoảng từ 1 đến tổng số trang
+        page = Math.max(1, Math.min(page, totalPages));
+
+        // Lấy danh sách liên hệ phân trang từ Service
+        List<Adv> advs = advService.getPaginatedContacts(page, pageSize, searchString);
+
+        // Tạo đối tượng ResponsePaging để chứa thông tin phân trang và danh sách liên hệ
+        ResponsePaging<List<Adv>> responsePaging = new ResponsePaging<>(advs, totalPages, page, totalAdvs);
+
+        return ResponseEntity.ok(responsePaging);
     }
 
 
@@ -63,7 +74,7 @@ public class AdvController {
         return ResponseEntity.badRequest().body("Invalid request body");
     }
 
-    @DeleteMapping("/delete/{id}")
+    @PutMapping("/delete/{id}")
     public ResponseEntity<String> deleteAdv(@PathVariable int id) {
         try {
             advService.deleteAdv(id);
@@ -73,7 +84,7 @@ public class AdvController {
         }
     }
 
-    @DeleteMapping("/deleteAll")
+    @PostMapping("/deleteAll")
     public ResponseEntity<String> deleteAllAdvs(@RequestParam("ids") List<Integer> ids) {
         try {
             advService.deleteAllAdvs(ids);

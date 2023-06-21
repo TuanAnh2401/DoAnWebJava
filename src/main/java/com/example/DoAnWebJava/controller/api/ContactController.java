@@ -1,7 +1,10 @@
 package com.example.DoAnWebJava.controller.api;
 
+import com.example.DoAnWebJava.entities.Adv;
 import com.example.DoAnWebJava.entities.Contact;
+import com.example.DoAnWebJava.repositories.UserRegistrationException;
 import com.example.DoAnWebJava.service.ContactService;
+import com.example.DoAnWebJava.support.ResponsePaging;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -20,6 +23,28 @@ public class ContactController {
     public List<Contact> getAllContacts() {
         return contactService.getAllContacts();
     }
+
+    @GetMapping("/paginate")
+    public ResponseEntity<ResponsePaging<List<Contact>>> getPaginatedContacts(
+            @RequestParam(defaultValue = "1") int page,
+            @RequestParam(defaultValue = "") String searchString
+    ) {
+        int pageSize = 10; // Kích thước trang (số lượng liên hệ trên mỗi trang)
+        int totalContacts = contactService.getTotalContacts(searchString);
+        int totalPages = (int) Math.ceil((double) totalContacts / pageSize);
+
+        // Giới hạn số trang hiện tại trong khoảng từ 1 đến tổng số trang
+        page = Math.max(1, Math.min(page, totalPages));
+
+        // Lấy danh sách liên hệ phân trang từ Service
+        List<Contact> contacts = contactService.getPaginatedContacts(page, pageSize, searchString);
+
+        // Tạo đối tượng ResponsePaging để chứa thông tin phân trang và danh sách liên hệ
+        ResponsePaging<List<Contact>> responsePaging = new ResponsePaging<>(contacts, totalPages, page, totalContacts);
+
+        return ResponseEntity.ok(responsePaging);
+    }
+
     @GetMapping("/getByActivate/{isActivate}")
     public ResponseEntity<List<Contact>> getContactsByActivate(@PathVariable boolean isActivate) {
         List<Contact> contacts = contactService.getContactsByActivate(isActivate);
@@ -40,25 +65,22 @@ public class ContactController {
         Contact createdContact = contactService.createContact(contact);
         return ResponseEntity.ok(createdContact);
     }
-
-    @PutMapping("/edit/{id}")
-    public ResponseEntity<Contact> updateContact(@PathVariable int id, @Valid @RequestBody Contact updatedContact) {
-        Contact contact = contactService.getContactById(id);
-        if (contact != null) {
-            updatedContact.setId(id);
-            Contact updated = contactService.updateContact(updatedContact);
-            return ResponseEntity.ok(updated);
-        }
-        return ResponseEntity.notFound().build();
-    }
-
-    @DeleteMapping("/delete/{id}")
-    public ResponseEntity<Void> deleteContact(@PathVariable int id) {
-        Contact contact = contactService.getContactById(id);
-        if (contact != null) {
-            contactService.deleteContact(contact);
+    @PutMapping("/delete/{id}")
+    public ResponseEntity<String> deleteContact(@PathVariable int id) {
+        try {
+            contactService.deleteContact(id);
             return ResponseEntity.noContent().build();
+        } catch (UserRegistrationException e) {
+            return ResponseEntity.notFound().build();
         }
-        return ResponseEntity.notFound().build();
+    }
+    @PostMapping("/deleteAll")
+    public ResponseEntity<String> deleteAllContacts(@RequestParam("ids") List<Integer> ids) {
+        try {
+            contactService.deleteAllContacts(ids);
+            return ResponseEntity.noContent().build();
+        } catch (UserRegistrationException e) {
+            return ResponseEntity.notFound().build();
+        }
     }
 }

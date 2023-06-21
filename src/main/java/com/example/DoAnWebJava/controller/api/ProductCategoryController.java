@@ -1,9 +1,9 @@
 package com.example.DoAnWebJava.controller.api;
 
-import com.example.DoAnWebJava.entities.ProductCategory;
-import com.example.DoAnWebJava.repositories.UserRegistrationException;
+import com.example.DoAnWebJava.dto.ProductCategoryDto;
 import com.example.DoAnWebJava.service.ProductCategoryService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -21,59 +21,47 @@ public class ProductCategoryController {
     }
 
     @GetMapping("/getAll")
-    public ResponseEntity<List<ProductCategory>> getAllProductCategories() {
-        List<ProductCategory> allProductCategories = productCategoryService.getAllProductCategories();
-        return ResponseEntity.ok(allProductCategories);
+    public ResponseEntity<List<ProductCategoryDto>> getAllProductCategories() {
+        List<ProductCategoryDto> productCategoryDtos = productCategoryService.getAllProductCategoryDtos();
+        return new ResponseEntity<>(productCategoryDtos, HttpStatus.OK);
     }
-
-
 
     @GetMapping("/getByActivate/{isActivate}")
-    public ResponseEntity<List<ProductCategory>> getProductCategoriesByActivate(@PathVariable boolean isActivate) {
-        List<ProductCategory> activeProductCategories = productCategoryService.getProductCategoriesByActivate(isActivate);
-        return ResponseEntity.ok(activeProductCategories);
+    public ResponseEntity<List<ProductCategoryDto>> getProductCategoriesByActivate(@PathVariable boolean isActivate) {
+        List<ProductCategoryDto> activeProductCategoryDtos = productCategoryService.getProductCategoryDtosByActivate(isActivate);
+        return new ResponseEntity<>(activeProductCategoryDtos, HttpStatus.OK);
     }
 
-
     @GetMapping("/{id}")
-    public ResponseEntity<ProductCategory> getProductCategoryById(@PathVariable int id) {
-        ProductCategory productCategory = productCategoryService.getProductCategoryById(id);
-        if (productCategory != null) {
-            return ResponseEntity.ok(productCategory);
-        } else {
-            return ResponseEntity.notFound().build();
+    public ResponseEntity<ProductCategoryDto> getProductCategoryById(@PathVariable int id) {
+        ProductCategoryDto productCategoryDto = productCategoryService.getProductCategoryDtoById(id);
+        if (productCategoryDto != null) {
+            return new ResponseEntity<>(productCategoryDto, HttpStatus.OK);
         }
+        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
 
     @PostMapping("/add")
-    public ResponseEntity<String> addProductCategory(@RequestBody ProductCategory productCategory) {
-        if (productCategory != null) {
-            ProductCategory addedProductCategory = productCategoryService.addProductCategory(productCategory);
-            return ResponseEntity.ok("Product Category added successfully with ID: " + addedProductCategory.getId());
-        }
-        return ResponseEntity.badRequest().body("Invalid request body");
+    public ResponseEntity<ProductCategoryDto> addProductCategory(@RequestBody ProductCategoryDto productCategoryDto) {
+        ProductCategoryDto addedProductCategory = productCategoryService.addProductCategory(productCategoryDto);
+        return new ResponseEntity<>(addedProductCategory, HttpStatus.CREATED);
     }
 
-    @PutMapping("/edit/{id}")
-    public ResponseEntity<String> updateProductCategory(@PathVariable int id, @RequestBody ProductCategory productCategory) throws UserRegistrationException {
-        if (productCategory != null) {
-            try {
-                ProductCategory updatedProductCategory = productCategoryService.updateProductCategory(id, productCategory);
-                return ResponseEntity.ok("Product Category updated successfully");
-            } catch (UserRegistrationException e) {
-                return ResponseEntity.badRequest().body(e.getMessage());
-            }
+    @PutMapping("/update/{id}")
+    public ResponseEntity<ProductCategoryDto> updateProductCategory(@PathVariable int id, @RequestBody ProductCategoryDto productCategoryDto) {
+        ProductCategoryDto updatedProductCategory = productCategoryService.updateProductCategory(id, productCategoryDto);
+        if (updatedProductCategory != null) {
+            return new ResponseEntity<>(updatedProductCategory, HttpStatus.OK);
         }
-        return ResponseEntity.badRequest().body("Invalid request body");
+        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
 
     @DeleteMapping("/delete/{id}")
-    public ResponseEntity<String> deleteProductCategory(@PathVariable int id) {
-        try {
-            productCategoryService.deleteProductCategory(id);
-            return ResponseEntity.ok("Product Category deleted successfully");
-        } catch (UserRegistrationException e) {
-            return ResponseEntity.notFound().build();
+    public ResponseEntity<Void> deleteProductCategory(@PathVariable int id) {
+        boolean deleted = productCategoryService.deleteProductCategory(id);
+        if (deleted) {
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         }
+        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
 }

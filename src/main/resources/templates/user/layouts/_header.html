@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      lang="en">
+<head>
+
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+
+
+
+
+    <!-- Additional CSS Files -->
+    <link th:fragment="link-css" rel="stylesheet" th:href="@{/content/assets/css/bootstrap.min.css}">
+
+    <link th:fragment="link-css" rel="stylesheet" th:href="@{/content/assets/css/font-awesome.css}">
+
+    <link th:fragment="link-css" rel="stylesheet" th:href="@{/css/shop.css}">
+
+    <link th:fragment="link-css" rel="stylesheet" th:href="@{/content/assets/css/owl-carousel.css}">
+
+    <link th:fragment="link-css" rel="stylesheet" th:href="@{/content/assets/css/lightbox.css}">
+    <!--
+
+    TemplateMo 571 Hexashop
+
+    https://templatemo.com/tm-571-hexashop
+
+    -->
+</head>
+<body >
+<header th:fragment="header">
+    <!-- /.content-wrapper -->
+
+        <div class="container">
+            <div class="row">
+                <div class="col-12">
+                    <nav class="main-nav">
+                        <!-- ***** Logo Start ***** -->
+                        <a href="index.html" class="logo">
+                            <img src="assets/images/logo.png">
+                        </a>
+                        <!-- ***** Logo End ***** -->
+                        <!-- ***** Menu Start ***** -->
+                        <ul class="nav">
+                            <li class="scroll-to-section"><a href="#top" class="active">Home</a></li>
+                            <li class="scroll-to-section"><a href="#men" class="">Men's</a></li>
+                            <li class="scroll-to-section"><a href="#women">Women's</a></li>
+                            <li class="scroll-to-section"><a href="#kids">Kid's</a></li>
+                            <li class="submenu">
+                                <a href="javascript:;">Pages</a>
+                                <ul>
+                                    <li><a href="about.html">About Us</a></li>
+                                    <li><a href="products.html">Products</a></li>
+                                    <li><a href="single-product.html">Single Product</a></li>
+                                    <li><a href="contact.html">Contact Us</a></li>
+                                </ul>
+                            </li>
+                            <li class="submenu">
+                                <a href="javascript:;">Features</a>
+                                <ul>
+                                    <li><a href="#">Features Page 1</a></li>
+                                    <li><a href="#">Features Page 2</a></li>
+                                    <li><a href="#">Features Page 3</a></li>
+                                    <li><a rel="nofollow" href="https://templatemo.com/page/4" target="_blank">Template Page 4</a></li>
+                                </ul>
+                            </li>
+                            <li class="scroll-to-section"><a href="#explore">Explore</a></li>
+                        </ul>
+                        <a class="menu-trigger">
+                            <span>Menu</span>
+                        </a>
+                        <!-- ***** Menu End ***** -->
+                    </nav>
+                </div>
+            </div>
+        </div>
+
+
+</header>
+<div th:fragment="content"></div>
+<div th:replace="~{user/layouts/_footer :: footer}"></div>
+</body>
+</html>

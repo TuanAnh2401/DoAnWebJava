@@ -1,0 +1,44 @@
+<footer th:fragment="footer" class="main-footer" xmlns:th="http://www.thymeleaf.org">
+    <div class="float-right d-none d-sm-block">
+        <b>Version</b> 3.2.0-rc
+    </div>
+    <strong>&copy; 2014-2023 <a href="https://adminlte.io">AdminLTE.io</a>.</strong> All rights reserved.
+
+    <script th:src="@{/scripts/jquery-3.6.0.min.js}"></script>
+    <!-- Bootstrap -->
+    <script th:src="@{/content/assets/js/popper.js}"></script>
+    <script th:src="@{/content/assets/js/bootstrap.min.js}"></script>
+
+    <!-- Plugins -->
+    <script th:src="@{/content/assets/js/owl-carousel.js}"></script>
+    <script th:src="@{/content/assets/js/accordions.js}"></script>
+    <script th:src="@{/content/assets/js/datepicker.js}"></script>
+    <script th:src="@{/content/assets/js/scrollreveal.min.js}"></script>
+    <script th:src="@{/content/assets/js/waypoints.min.js}"></script>
+    <script th:src="@{/content/assets/js/jquery.counterup.min.js}"></script>
+    <script th:src="@{/content/assets/js/imgfix.min.js}"></script>
+    <script th:src="@{/content/assets/js/slick.js}"></script>
+    <script th:src="@{/content/assets/js/lightbox.js}"></script>
+    <script th:src="@{/content/assets/js/isotope.js}"></script>
+
+    <!-- Global Init -->
+    <script th:src="@{/content/assets/js/custom.js}"></script>
+
+    <script>
+
+        $(function() {
+            var selectedClass = "";
+            $("p").click(function(){
+            selectedClass = $(this).attr("data-rel");
+            $("#portfolio").fadeTo(50, 0.1);
+                $("#portfolio div").not("."+selectedClass).fadeOut();
+            setTimeout(function() {
+              $("."+selectedClass).fadeIn();
+              $("#portfolio").fadeTo(50, 1);
+            }, 500);
+
+            });
+        });
+
+    </script>
+</footer>
